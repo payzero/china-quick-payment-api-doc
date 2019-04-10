@@ -1,10 +1,5 @@
 # QuickPay API文档 #
 
-### 修改记录 ###
-|文件版本|修改时间|修改人|修改内容|
-|:--|:--|:--|:--|
-|v0.1| 2019-3-20 | Raph | 初建文档 |
-
 ## 技术综述 ##
 
 QuickPay API整体采用RESTful API的风格，以application/json格式进行数据的传递。
@@ -15,6 +10,12 @@ Authorization: Bearer xxxxxxxxxxx
 ~~~
 
 其中xxxxxxxxxxx为Payzero用于验证调用方身份的JWT风格的token, 该token的获得是通过使用Payzero分配的username和password并调用登录接口。其有效时间为4小时，且JWT本身包含了过期的时间的信息。关于JWT token，可参考 <https://jwt.io/>。4小时到期之前，可重新调用登录接口获取token，token之间均为独立关系，获取新的token不会影响未过期的老token的使用。
+
+## 接口地址##
+使用如下链接代替本文中出现的{payzero\_api\_url}字样
+
+* 测试环境: https://dev-quickpay-api.payzero.cn
+* 生产环境: https://quickpay-api.payzero.cn
 
 ## 接口介绍##
 
@@ -51,7 +52,7 @@ Authorization: Bearer xxxxxxxxxxx
 
 ### 2. 订单信息上传 ###
 #### 2.1 订单批次上传 ####
-若商户有一个批次的订单需要处理，请调用此接口创建订单批次。创建完订单批次后，请通知相关人员进行财务流程处理。财务流程确认后Payzero将处理此批次订单。
+若商户有一个批次的订单需要处理，请先调用本接口创建订单批次。创建完订单批次后，登录商户端后台可查看到订单批次。根据商户是否需要代垫资服务，订单批次的手续费状态可能为"等待支付手续费"(需垫资)或"已确认"(无需代垫资)。若为"等待支付手续费"，需通知相关人员进行财务打款并通知我方确认收款。待订单批次手续费确认后，可进行后续调用。
 
 * url: {payzero\_api\_url}/orderBatch
 * method: POST
@@ -156,6 +157,18 @@ items类型的结构如下:
     }
 }
 ~~~
+
+
+订单批次上传完成之后，在商户端可以查看到该订单批次信息:
+
+![](doc/ob_screenshot.png)
+
+#### 2.2 订单支付 ####
+目前在商户端进行订单的批量支付服务，接口待公布
+
+#### 2.3 订单批次回执下载 ####
+目前在商户端可下载文件，接口待公布
+
 
 
 
