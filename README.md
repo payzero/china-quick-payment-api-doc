@@ -171,7 +171,7 @@ items类型的结构如下:
 
 * url: {payzero\_api\_url}/orderBatch/{orderBatchId}/pay
 * method: GET
-* request Path Variable: url路径参数为创建该订单批次时返回的orderBatchId
+* request Path Variable: url路径参数为创建该订单批次时返回的{orderBatchId}
 
 * response: success参数返回为true时即表示系统已成功安排本批次支付任务
 
@@ -196,12 +196,12 @@ items类型的结构如下:
 |50056| 系统记录的银行卡当前额度可能无法支持支付本批次订单，请增加系统内银行卡额度并确保实际资金与额度大致匹配 | 在商户后台中录入的银行卡“当前余额“总额不足以支付当前订单批次，请确保银行卡真是余额足够支付整个订单批次，并在系统中填写入真实余额
 
 
-#### 2.3 订单批次支付&推送结果查询 ####
+#### 2.3 订单批次支付&推送结果汇总查询 ####
 用于查询订单批次的支付及推单结果。若支付失败，可重新调用订单批次支付接口，系统将只重新支付当前支付失败的订单，多次反复支付失败，需联系技术人员排查支付失败原因。若推单失败，请运营人员自行登录商户后台修改申报的订购人身份信息，编辑并点击重新推单。
 
 * url: {payzero\_api\_url}/orderBatch/{orderBatchId}/summary
 * method: GET
-* request Path Variable: url路径参数为创建该订单批次时返回的orderBatchId
+* request Path Variable: url路径参数为创建该订单批次时返回的{orderBatchId}
 
 * response: 
 
@@ -235,8 +235,87 @@ items类型的结构如下:
 ~~~
 
 #### 2.4 单笔订单回执查询 
+用于查询单笔订单的详细状态及所有支付原始信息，供商家进行后续申报
+
+* url: {payzero\_api\_url}/order/feedback?mchtOrderNo={mchtOrderNo}
+* method: GET
+* request: Request Param {mchtOrderNo}为商家订单号
+
+
+* response:
+
+|字段名称|参数|例子|说明|
+|:--|:--|:--|:--|
+|商家订单号| mchtOrderNo |  2019041000011 |
+|支付金额(分)| paymentAmount | 1 | 单位为分 |
+|申报支付人姓名| payerName | 周Xx |
+|申报支付人身份证号| payerNumber | 610327198509271234  | |
+|申报支付人手机号| payerPhone | 13800138000  | |
+|交易摘要| subject |YYYYYYYY-口红  | |
+|支付状态| payStatus | PAY_SUCCEED  |	参见附录[A.1](#a.1-支付状态)|
+|申报状态| declareStatus | DECLARE_FAILED  | 参见附录[A.2](#a.2-申报状态)|
+|申报失败原因| declareFailReason | 支付人姓名和证件号不匹配 | |
+|支付单号| paymentOrderNo | 111906650000561884 | |
+|核验机构| verDept | null | 验核机构 1-银联 2-网联 3-其他 |
+|支付类型| payType | 2 | 用户支付类型 1-APP 2-PC 3-扫码 4-其他 |
+|支付原始请求| initRequest | ... | |
+|支付原始返回| initResponse | ... | |
+|支付完成时间| paymentDatetime | 20190411213822 | 格式为yyyyMMddHHmmss |
+|支付公司海关备案名称| customsPayCompanyName | 通联支付网络服务股份有限公司 | |
+|支付公司海关备案号| customsPayCompanyCode |  312228034T | |
+
+
+
+~~~
+{
+  "success": true,
+  "errorMsg": null,
+  "errorCode": null,
+  "data": {
+    "mchtOrderNo": "2019041000011",
+    "paymentAmount": 1,
+    "payerName": "周Xx",
+    "payerNumber": "610327198509271234",
+    "payerPhone": "13800138000",
+    "subject": "YYYYYYYY-口红",
+    "payStatus": "PAY_SUCCEED",
+    "declareStatus": "DECLARE_FAILED",
+    "declareFailReason": "支付人姓名和证件号不匹配",
+    "paymentOrderNo": "111906650000561884",
+    "verDept": null,
+    "payType": "2",
+    "initRequest": "https://vsp.allinpay.com/apiweb/qpay/payapplyagree[data:{agreeid=201902221443545123, amount=1, appid=00152305, currency=CNY, cusid=55152104816ZLVW, notifyurl=https://dev-quickpay-api.payzero.cn/quickpay_notify/ALLINPAY/pengma, orderid=2019041000011, randomstr=1554989889665, subject=YYYYYYYY-口红, version=11}]",
+    "initResponse": "{\"retcode\":\"SUCCESS\",\"retmsg\":null,\"randomstr\":\"917005450382\",\"sign\":\"B74D60CEB7141B3CB26FD4D7A5BD7B29\",\"orderid\":\"2019041000011\",\"trxstatus\":\"1999\",\"errmsg\":\"请输入短信验证码\",\"trxid\":null,\"chnltrxid\":null,\"fintime\":null,\"thpinfo\":\"{\\\"sign\\\":\\\"\\\",\\\"tphtrxcrtime\\\":\\\"\\\",\\\"tphtrxid\\\":0,\\\"trxflag\\\":\\\"trx\\\",\\\"trxsn\\\":\\\"\\\"}\"}",
+    "paymentDatetime": "20190411213822",
+    "customsPayCompanyName": "通联支付网络服务股份有限公司",
+    "customsPayCompanyCode": "312228034T"
+  }
+}
+
+~~~
 
 #### 2.5 订单批次回执查询
+
+## 附录
+
+### A.1 支付状态
+|状态代码|状态说明|
+|:--|:--|
+|NIT\_FEE\_PENDING|初始化订单，未进行手续费对账|
+|NOT\_PAYED|未支付|
+|PAY\_APPLIED|已申请支付|
+|PAY\_SUCCEED|支付成功|
+|PAY\_FAILED|支付失败|
+
+### A.2 申报状态
+|状态代码|状态说明|
+|:--|:--|
+| NOT\_DECLARED | 未申报|
+| PENDING_DECLARE | 待申报 |
+| DECLARING | 申报中 |
+| DECLARED | 已申报 |
+| DECLARE_FAILED | 申报失败 |
+	
 
 
 
