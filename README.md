@@ -1,4 +1,4 @@
-# QuickPay API文档 #
+# Payzero QuickPay API文档 #
 
 ## 技术综述 ##
 
@@ -242,7 +242,7 @@ items类型的结构如下:
 * request: Request Param {mchtOrderNo}为商家订单号
 
 
-* response:
+* response: orderResultDto
 
 |字段名称|参数|例子|说明|
 |:--|:--|:--|:--|
@@ -263,8 +263,6 @@ items类型的结构如下:
 |支付完成时间| paymentDatetime | 20190411213822 | 格式为yyyyMMddHHmmss |
 |支付公司海关备案名称| customsPayCompanyName | 通联支付网络服务股份有限公司 | |
 |支付公司海关备案号| customsPayCompanyCode |  312228034T | |
-
-
 
 ~~~
 {
@@ -295,6 +293,108 @@ items类型的结构如下:
 ~~~
 
 #### 2.5 订单批次回执查询
+
+用于批量查询一个订单批次中所有订单的详细状态及所有支付原始信息，供商家进行后续申报。请求需传递每页数据条数和当前的页数，每次最多请求100条数据。数据是按照原订单入库本系统的时间倒序排列。
+
+* url: {payzero\_api\_url}/orderBatch/{orderBatchId}/feedback?pagesize={pagesize}&page={page}
+* method: GET
+* request: Path Variable url路径参数为创建该订单批次时返回的{orderBatchId}
+
+|字段名称|参数|例子|说明|
+|:--|:--|:--|:--|
+|pagesize| 每页数据条数 | 10| 每页数据条数最大不能超过100条 |
+|page| 当前为全部数据的第几页| 1 | 数据从第1页开始|
+
+
+一个请求例子
+
+~~~
+curl -X GET "http://127.0.0.1:9040/orderBatch/53/feedback?page=1&pagesize=10" -H "accept: */*" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwZW5nbWEiLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNTU1MTY3MTY5LCJleHAiOjE1NTUxODE1Njl9.EgRhAzPXVryIXMR_OnM-51gus5m0cm1zdjwds764ajk"
+~~~
+
+response: 
+
+|字段名称|参数|例子|说明|
+|:--|:--|:--|:--|
+|rows| 订单回执数据| ... | 为一个数组的orderResultDto，orderResultDto可参考[2.4](#24-单笔订单回执查询)的返回结果 |
+|page| 当前为全部数据的第几页| 1 | 数据从第1页开始|
+|pagesize| 每页数据条数 | 10| 每页数据条数最大不能超过100条 |
+|total| 总数据条数 | 465 | |
+
+一个每页3条数据，请求第二页的返回例子:
+
+~~~
+{
+  "success": true,
+  "errorMsg": null,
+  "errorCode": null,
+  "data": {
+    "rows": [
+      {
+        "mchtOrderNo": "BA1812-100937",
+        "paymentAmount": 58130,
+        "payerName": "赵XX",
+        "payerNumber": "21080219930XXXX3X",
+        "payerPhone": "1864170XXXX",
+        "subject": "Svelty分解酵母120粒",
+        "payStatus": "PAY_CANCELLED",
+        "declareStatus": "NOT_DECLARED",
+        "declareFailReason": null,
+        "paymentOrderNo": null,
+        "verDept": null,
+        "payType": "2",
+        "initRequest": null,
+        "initResponse": null,
+        "paymentDatetime": 20190313124233,
+        "customsPayCompanyName": "通联支付网络服务股份有限公司",
+        "customsPayCompanyCode": "312228034T"
+      },
+      {
+        "mchtOrderNo": "BA1812-100937-1",
+        "paymentAmount": 17162,
+        "payerName": "赵XX",
+        "payerNumber": "2108021993083XXX3X",
+        "payerPhone": "1864170XXXX",
+        "subject": "CLAYGE洗发水*1",
+        "payStatus": "PAY_CANCELLED",
+        "declareStatus": "NOT_DECLARED",
+        "declareFailReason": null,
+        "paymentOrderNo": null,
+        "verDept": null,
+        "payType": "2",
+        "initRequest": null,
+        "initResponse": null,
+        "paymentDatetime": 20190313124233,
+        "customsPayCompanyName": "通联支付网络服务股份有限公司",
+        "customsPayCompanyCode": "312228034T"
+      },
+      {
+        "mchtOrderNo": "BA1812-100953",
+        "paymentAmount": 123616,
+        "payerName": "龚XX",
+        "payerNumber": "33068319870110XXXX",
+        "payerPhone": "177173XXXX",
+        "subject": "F.O.Online 儿童袜裤",
+        "payStatus": "PAY_SUCCEED",
+        "declareStatus": "DECLARED",
+        "declareFailReason": null,
+        "paymentOrderNo": "111906650000530919",
+        "verDept": "1",
+        "payType": "2",
+        "initRequest": null,
+        "initResponse": null,
+        "paymentDatetime": "20190313124233",
+        "customsPayCompanyName": "通联支付网络服务股份有限公司",
+        "customsPayCompanyCode": "312228034T"
+      }
+    ],
+    "page": 2,
+    "pagesize": 3,
+    "total": 465
+  }
+}
+~~~
+
 
 ## 附录
 
