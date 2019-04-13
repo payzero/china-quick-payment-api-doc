@@ -136,8 +136,11 @@ items类型的结构如下:
 
 |字段名称|参数|例子|说明|
 |:--|:--|:--|:--|
+|订单批次id| orderBatchId |  59 |
 |订单批次号| dispBatchNum | "20190320162344842"|
 |批次内订单总额(分)| orderTotalAmount | 70302 | 单位为分 |
+|创建时间| createdTime | 1553070224475  | |
+
 ~~~
 {
     "success": true,
@@ -163,12 +166,77 @@ items类型的结构如下:
 
 ![](doc/ob_screenshot.png)
 
-#### 2.2 订单支付 ####
-目前在商户端进行订单的批量支付服务，接口待公布
+#### 2.2 订单批次触发支付 ####
+调用本接口对本批次内的订单进行支付与推关。（若为垫资模式，需先线下支付手续费）本接口同步返回成功只表明系统接收到开始支付的指令，支付完成时间取决于协商的合作模式等其他因素。在发送支付指令成功之后，可以进行20分钟/次的订单批量批次支付&推送结果轮询。
 
-#### 2.3 订单批次回执下载 ####
-目前在商户端可下载文件，接口待公布
+* url: {payzero\_api\_url}/orderBatch/{orderBatchId}/pay
+* method: GET
+* request Path Variable: url路径参数为创建该订单批次时返回的orderBatchId
 
+* response: success参数返回为true时即表示系统已成功安排本批次支付任务
+
+~~~
+{
+    "success": true,
+    "errorMsg": null,
+    "errorCode": null,
+    "data": {
+       “分配任务完成”
+    }
+}
+~~~
+
+* 错误代码: 若success为false，可能出现的errorCode和其对应解释如下
+
+|errorCode|errorMsg| 备注|
+|:--|:--|:--|
+|50001| 未找到支持的银行卡和协议，可能与垫资模式的设置不正确有关 | 联系技术支持
+|50010| 未找到已签约的银行卡进行支付 | 登录商户后台进行绑卡 |
+|50054| 没有需要被分配执行的订单 | 
+|50056| 系统记录的银行卡当前额度可能无法支持支付本批次订单，请增加系统内银行卡额度并确保实际资金与额度大致匹配 | 在商户后台中录入的银行卡“当前余额“总额不足以支付当前订单批次，请确保银行卡真是余额足够支付整个订单批次，并在系统中填写入真实余额
+
+
+#### 2.3 订单批次支付&推送结果查询 ####
+用于查询订单批次的支付及推单结果。若支付失败，可重新调用订单批次支付接口，系统将只重新支付当前支付失败的订单，多次反复支付失败，需联系技术人员排查支付失败原因。若推单失败，请运营人员自行登录商户后台修改申报的订购人身份信息，编辑并点击重新推单。
+
+* url: {payzero\_api\_url}/orderBatch/{orderBatchId}/summary
+* method: GET
+* request Path Variable: url路径参数为创建该订单批次时返回的orderBatchId
+
+* response: 
+
+|字段名称|参数|例子|说明|
+|:--|:--|:--|:--|
+|批次内订单总数| total |  159 |
+|支付成功总数| paySuccessCount |150 | 单位为分 |
+|支付失败总数|payFailedCount | 2|
+|其他支付中间状态总数|payOtherCount |7  | |
+|申报成功总数|declareSuccessCount |130  | |
+|申报失败总数|declareFailedCount |7  | |
+|其他申报中间状态总数|declareOtherCount | 22  | |
+|总已支付金额(分)|totalPaymentAmount | 10489449  | |
+
+~~~
+{
+    "data": {
+        "declareFailedCount": 7,
+        "declareOtherCount": 22,
+        "declareSuccessCount": 130,
+        "payFailedCount": 2,
+        "payOtherCount": 7,
+        "paySuccessCount": 150,
+        "total": 159,
+        "totalPaymentAmount": 10489449
+    },
+    "errorCode": null,
+    "errorMsg": null,
+    "success": true
+}
+~~~
+
+#### 2.4 单笔订单回执查询 
+
+#### 2.5 订单批次回执查询
 
 
 
