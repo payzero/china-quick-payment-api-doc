@@ -252,8 +252,8 @@ items类型的结构如下:
 |申报支付人身份证号| payerNumber | 610327198509271234  | |
 |申报支付人手机号| payerPhone | 13800138000  | |
 |交易摘要| subject |YYYYYYYY-口红  | |
-|支付状态| payStatus | PAY_SUCCEED  |	参见附录[A.1](#a.1-支付状态)|
-|申报状态| declareStatus | DECLARE_FAILED  | 参见附录[A.2](#a.2-申报状态)|
+|支付状态| payStatus | PAY_SUCCEED  |	参见附录[A.1](#a1-支付状态)|
+|申报状态| declareStatus | DECLARE_FAILED  | 参见附录[A.2](#a2-申报状态)|
 |申报失败原因| declareFailReason | 支付人姓名和证件号不匹配 | |
 |支付单号| paymentOrderNo | 111906650000561884 | |
 |核验机构| verDept | null | 验核机构 1-银联 2-网联 3-其他 |
