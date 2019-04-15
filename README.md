@@ -401,9 +401,10 @@ response:
 ### A.1 支付状态
 |状态代码|状态说明|
 |:--|:--|
-|NIT\_FEE\_PENDING|初始化订单，未进行手续费对账|
+|INIT\_FEE\_PENDING|初始化订单，未进行手续费对账|
 |NOT\_PAYED|未支付|
 |PAY\_APPLIED|已申请支付|
+|PAY\_SMS\_CONFIRMED|支付中间状态|
 |PAY\_SUCCEED|支付成功|
 |PAY\_FAILED|支付失败|
 
