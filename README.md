@@ -1,7 +1,8 @@
-# Payzero QuickPay API文档 #
+# Payzero QuickPay API文档
 
-## 技术综述 ##
+## 技术综述
 
+### 请求格式说明
 QuickPay API整体采用RESTful API的风格，以application/json格式进行数据的传递。
 本文档中所有的HTTP方法（无论其是GET/POST/DELETE/PUT或任何其他方法），其HTTP HEADER中必须加入OAuth2风格的Http header属性:
 
@@ -11,13 +12,64 @@ Authorization: Bearer xxxxxxxxxxx
 
 其中xxxxxxxxxxx为Payzero用于验证调用方身份的JWT风格的token, 该token的获得是通过使用Payzero分配的username和password并调用登录接口。其有效时间为4小时，且JWT本身包含了过期的时间的信息。关于JWT token，可参考 <https://jwt.io/>。4小时到期之前，可重新调用登录接口获取token，token之间均为独立关系，获取新的token不会影响未过期的老token的使用。
 
-## 接口地址##
+### 返回格式说明
+
+调用接口时的返回HTTP STATUS CODE遵循HTTP返回值的通用定义，常见HTTP返回值例如:
+
+|HTTP STATUS CODE|说明|
+|:--:|:--|
+|200|SUCCESS, 调用成功(仅表示api调用成功，业务是否成功需查看返回的HTTP BODY)|
+|400|BAD REQUEST, 通常用于请求的参数不正确|
+|405|METHOD NOT ALLOWED, HTTP方法使用错误，例如错误的使用POST调用了一个GET方法|
+|401|UNAUTHORIZED, access_token不正确|
+|403|FORBIDDEN, 权限不足|
+|404|NOT FOUND, 不存在的接口url|
+|500|INTERNAL SERVER ERROR, 服务器内部错误|
+
+调用方应先根据HTTP STATUS CODE作为判断，过滤所有HTTP返回值即不成功的情况。
+
+所有调用在HTTP正常调用成功即返回200的情况下，返回的HTTP BODY消息体内容为统一的JSON格式内容如下：
+
+|字段名称|参数|类型|说明|
+|:--:|:--:|:--|:--|
+|业务层面是否正常完成| success | Boolean | 可以此字段作为标准判定业务调用是否完成，当success为false时，可以从errorMsg读取到错误原因等，errorCode作为参考便于向Payzero反馈问题 |
+|业务错误代码| errorCode | String | |
+|业务错误信息| errorMsg | String | |
+|返回数据 | data | JSON | 具体返回的业务数据，本文后续所有api在"response"部分所述内容，为简便均表示的是data部分的内容 |
+
+一个典型的业务成功的返回例子如下:
+
+~~~
+{
+    "success": true,
+    "errorMsg": null,
+    "errorCode": null,
+    "data": {
+        "merchantId": "13",
+        "orderBatchId": "11",
+    }
+}
+~~~
+
+一个典型的业务失败的返回例子如下:
+
+~~~
+{
+    "success": false,
+    "errorMsg": "参数 xxxx 未正确设置。",
+    "errorCode": "30001",
+    "data": null
+}
+~~~
+
+
+## 接口地址 ##
 使用如下链接代替本文中出现的{payzero\_api\_url}字样
 
 * 测试环境: https://dev-quickpay-api.payzero.cn
 * 生产环境: https://quickpay-api.payzero.cn
 
-## 接口介绍##
+## 接口介绍 ##
 
 ### 1. 登录获取token ###
 * url: {payzero\_api\_url}/auth/login
