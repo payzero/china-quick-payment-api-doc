@@ -8,8 +8,6 @@ import javax.validation.constraints.Positive;
 
 public class OrdersDto {
 	
-	private Long merchantId;
-	
 	private Date orderDatetime; //订单下单完成实践
 	
 	private String paymentDatetime; //支付完成时间
@@ -42,14 +40,6 @@ public class OrdersDto {
 	private List<OrderItemDto> items;
 	
 	private Boolean isBookedBalance; //是否已安排在支付任务中
-
-	public Long getMerchantId() {
-		return merchantId;
-	}
-
-	public void setMerchantId(Long merchantId) {
-		this.merchantId = merchantId;
-	}
 
 	public Date getOrderDatetime() {
 		return orderDatetime;

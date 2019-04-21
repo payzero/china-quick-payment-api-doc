@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.payzero.quickpaysdk.exception.AesException;
-import cn.payzero.quickpaysdk.model.OrdersDto;
+import cn.payzero.quickpaysdk.model.OrderResultDto;
 import cn.payzero.quickpaysdk.util.SHA1;
 import cn.payzero.quickpaysdk.util.TestConstant;
 
@@ -52,7 +52,7 @@ public class NotificationsController {
 				// 根据msgType以及msgBody处理业务逻辑
 
 				if("PAY_STATUS_NOTIFY".equalsIgnoreCase(msgType) || "DECLARE_STATUS_NOTIFY".equalsIgnoreCase(msgType)) {
-					OrdersDto o = om.readValue(msgBody, OrdersDto.class);
+					OrderResultDto o = om.readValue(msgBody, OrderResultDto.class);
 					System.out.println("successfully get data: " + o.getMchtOrderNo());
 				
 				}else {
