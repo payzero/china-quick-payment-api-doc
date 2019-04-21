@@ -563,14 +563,14 @@ items类型的结构如下:
 ![](doc/notifySetup.png)
 
 * 在填写的服务器地址实现处理业务逻辑的程序，可参考本项目的JavaSDK
-* 所有通知的格式均相同，payzero将发送一个Http Post请求至商户配置的服务器地址上，携带如下queryParams参数
+* 所有通知的格式均相同，payzero将发送一个Http Post请求至商户配置的服务器地址上，请求体的requestBody的结构如下:
 
 |字段名称|参数|例子|说明|
 |:--|:--|:--|:--|
 |服务器发送消息的时间戳| timestamp | 1555816968018 |  |
 |消息类型| msgType| PAY\_STATUS\_NOTIFY | |
 |消息内容| msgBody| ... | json格式字符串 |
-|签名| signature | xxxxxx | 服务器将使用商户提供的token，对消息进行签名，签名方法参见 [3.2](#32-消息签名方法) | |
+|签名| sign | xxxxxx | 服务器将使用商户提供的token，对消息进行签名，签名方法参见 [3.2](#32-消息签名方法) | |
 
 * 商户服务器端确认消息为Payzero发送后（验证签名)，建议先返回String "OK"，然后可进行自己的业务逻辑处理。因Payzero发送通知的http请求timeout时间较短，均为5秒，较长的处理时间将导致Payzero认为该通知未发送成功，而重复发送。
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.payzero.quickpaysdk.exception.AesException;
+import cn.payzero.quickpaysdk.model.NotificationWrapper;
 import cn.payzero.quickpaysdk.model.OrderResultDto;
 import cn.payzero.quickpaysdk.util.SHA1;
 import cn.payzero.quickpaysdk.util.TestConstant;
@@ -32,23 +34,17 @@ public class NotificationsController {
 	
 	@RequestMapping(path="quickpay_notify")
 	public String processQuickpayNotify(
-			@RequestParam Map<String, String> requestMap){
+			@RequestBody NotificationWrapper request){
 		
 		try {
-			if(!requestMap.containsKey("timestamp") || !requestMap.containsKey("msgBody") || !requestMap.containsKey("signature")) {
-				return "FAIL";
-			}
-			
-			System.out.println("sign:"+testConst.TEST_SIGN_TOKEN);
-			System.out.println("timestamp:"+requestMap.get("timestamp"));
-			System.out.println("msgBody:"+requestMap.get("msgBody"));
-			String sign = SHA1.getSHA1(testConst.TEST_SIGN_TOKEN, requestMap.get("timestamp"), requestMap.get("msgBody"));
+						
+			String sign = SHA1.getSHA1(testConst.TEST_SIGN_TOKEN, request.getTimestamp(), request.getMsgBody());
 			System.out.println("自身计算签名:" + sign);
-			System.out.println("请求返回签名:" + requestMap.get("signature"));
+			System.out.println("请求返回签名:" + request.getSign());
 			
-			if(sign.equalsIgnoreCase(requestMap.get("signature"))) {
-				String msgType = requestMap.get("msgType");
-				String msgBody = requestMap.get("msgBody");
+			if(sign.equalsIgnoreCase(request.getSign())) {
+				String msgType = request.getMsgType();
+				String msgBody = request.getMsgBody();
 				
 				System.out.println("msgType: " + msgType);
 				System.out.println("msgBody: " + msgBody);
