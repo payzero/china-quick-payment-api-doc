@@ -69,6 +69,25 @@ Authorization: Bearer xxxxxxxxxxx
 * 测试环境: https://dev-quickpay-api.payzero.cn
 * 生产环境: https://quickpay-api.payzero.cn
 
+## SDK(JAVA)下载 ##
+目前提供部分接口的调用示例，包括如下接口:
+
+1. 获取access\_token
+2. 单笔订单创建并支付
+3. 监听Payzero异步消息通知
+4. 陆续添加中
+
+~~~
+git clone https://github.com/payzero/china-quick-payment-api-doc
+cd china-quick-payment-api-doc
+
+# 进入项目置换application-test.yml文件中的username和password
+# 为Payzero分配的测试账户密码
+
+mvn clean install
+mvn spring-boot:run 
+~~~
+
 ## 接口介绍 ##
 
 ### 1. 登录获取token ###
@@ -354,8 +373,8 @@ items类型的结构如下:
 
 |字段名称|参数|例子|说明|
 |:--|:--|:--|:--|
-|pagesize| 每页数据条数 | 10| 每页数据条数最大不能超过100条 |
-|page| 当前为全部数据的第几页| 1 | 数据从第1页开始|
+|每页数据条数| pagesize | 10| 每页数据条数最大不能超过100条 |
+|当前为全部数据的第几页| page | 1 | 数据从第1页开始|
 
 
 一个请求例子
@@ -368,10 +387,10 @@ response:
 
 |字段名称|参数|例子|说明|
 |:--|:--|:--|:--|
-|rows| 订单回执数据| ... | 为一个数组的orderResultDto，orderResultDto可参考[2.4](#24-单笔订单回执查询)的返回结果 |
-|page| 当前为全部数据的第几页| 1 | 数据从第1页开始|
-|pagesize| 每页数据条数 | 10| 每页数据条数最大不能超过100条 |
-|total| 总数据条数 | 465 | |
+|订单回执数据| rows | ... | 为一个数组的orderResultDto，orderResultDto可参考[2.4](#24-单笔订单回执查询)的返回结果 |
+|当前为全部数据的第几页| page | 1 | 数据从第1页开始|
+|每页数据条数| pagesize | 10| 每页数据条数最大不能超过100条 |
+|总数据条数| total | 465 | |
 
 一个每页3条数据，请求第二页的返回例子:
 
@@ -446,6 +465,43 @@ response:
   }
 }
 ~~~
+
+#### 2.6 单笔订单创建并支付
+
+通过该接口可直接创建单笔订单并将此任务安排入系统后续的支付任务中。根据系统的风控规则和其他外部因素等，支付均非即时支付而是由系统安排支付时间。当该支付任务被执行后，支付结果（成功/失败）将以异步通知的形式返回给
+
+### 3 接收异步通知
+#### 3.1 配置异步通知接收参数
+
+* 登录商户后台后，点击右上角图标并选择"商户配置"
+![](doc/merchantConfig.png)
+
+* 填写用于接收异步通知的url和签名Token。令牌Token为对通知消息进行加签用。
+![](doc/notifySetup.png)
+
+* 在填写的服务器地址实现处理业务逻辑的程序，可参考本项目的JavaSDK
+* 所有通知的格式均相同，payzero将发送一个Http Post请求至商户配置的服务器地址上，携带如下queryParams参数
+
+|字段名称|参数|例子|说明|
+|:--|:--|:--|:--|
+|服务器发送消息的时间戳| timestamp | 1555816968018 |  |
+|消息类型| msgType| PAY\_STATUS\_NOTIFY | |
+|消息内容| msgBody| ... | json格式字符串 |
+|签名| signature | xxxxxx | 服务器将使用商户提供的token，对消息进行签名，签名方法参见 [3.2](#32-消息签名方法) | |
+
+* 商户服务器端确认消息为Payzero发送后（验证签名)，建议先返回String "OK"，然后可进行自己的业务逻辑处理。因Payzero发送通知的http请求timeout时间较短，均为5秒，较长的处理时间将导致Payzero认为该通知未发送成功，而重复发送。
+
+#### 3.2 消息签名方法
+将返回信息中的timestamp, msgBody以及商户自己保管的signToken三者以字典顺序进行排序并拼接成1个字符串，对字符串进行SHA1算法计算获取Hash值作为签名。
+
+可参考本项目提供的SDK中的相关代码。
+
+#### 3.3 消息重发机制
+所有消息通知，商户服务器均需回复String "OK"在返回体中，否则Payzero将认为商户未接收到该通知。未成功发送的消息，将被共计重发8次，分别为第一消息发送后的1m, 3m, 10m, 30m, 1h, 2h, 6h, 15h后重试直至商户服务器发送OK的返回。
+
+#### 3.4 支付状态异步通知
+
+#### 3.5 申报状态异步通知
 
 
 ## 附录
