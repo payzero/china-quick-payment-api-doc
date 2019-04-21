@@ -39,6 +39,9 @@ public class NotificationsController {
 				return "FAIL";
 			}
 			
+			System.out.println("sign:"+testConst.TEST_SIGN_TOKEN);
+			System.out.println("timestamp:"+requestMap.get("timestamp"));
+			System.out.println("msgBody:"+requestMap.get("msgBody"));
 			String sign = SHA1.getSHA1(testConst.TEST_SIGN_TOKEN, requestMap.get("timestamp"), requestMap.get("msgBody"));
 			System.out.println("自身计算签名:" + sign);
 			System.out.println("请求返回签名:" + requestMap.get("signature"));

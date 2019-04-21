@@ -587,8 +587,10 @@ items类型的结构如下:
 * msgBody为 [2.4](#24-单笔订单回执查询) 中orderResultDto，支付状态关注其中的PAY\_STATUS即可，状态代码参见 [A.1](#a1-支付状态)
 
 #### 3.5 申报状态异步通知
+
 * msgType为 DECLARE\_STATUS\_NOTIFY
 * msgBody为 [2.4](#24-单笔订单回执查询) 中orderResultDto，海关申报状态关注其中的DECLARE\_STATUS即可，状态代码参见 [A.2](#a2-申报状态)
+* 测试环境因支付公司渠道问题无法测试申报成功通知
 
 
 ## 附录
@@ -611,11 +613,3 @@ items类型的结构如下:
 | DECLARING | 申报中 |
 | DECLARED | 已申报 |
 | DECLARE_FAILED | 申报失败 |
-	
-
-
-
-
-
-
-

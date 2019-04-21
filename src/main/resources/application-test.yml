@@ -1,5 +1,6 @@
 quickpay:
-  url: "https://dev-quickpay-api.payzero.cn/"
-  username: 
-  password: 
+  #url: "https://dev-quickpay-api.payzero.cn/"
+  url: "http://127.0.0.1:9040/"
+  username: pengma
+  password: PZ123456
   signToken: s4khkBd4fL6uaRS2
