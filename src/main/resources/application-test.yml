@@ -1,0 +1,5 @@
+quickpay:
+  url: "https://dev-quickpay-api.payzero.cn/"
+  username: 
+  password: 
+  signToken: 

@@ -27,6 +27,9 @@ public class NotificationsController {
 	@Autowired
 	ObjectMapper om;
 	
+	@Autowired
+	TestConstant testConst;
+	
 	@RequestMapping(path="quickpay_notify")
 	public String processQuickpayNotify(
 			@RequestParam Map<String, String> requestMap){
@@ -36,7 +39,7 @@ public class NotificationsController {
 				return "FAIL";
 			}
 			
-			String sign = SHA1.getSHA1(TestConstant.TEST_SIGN_TOKEN, requestMap.get("timestamp"), requestMap.get("msgBody"));
+			String sign = SHA1.getSHA1(testConst.TEST_SIGN_TOKEN, requestMap.get("timestamp"), requestMap.get("msgBody"));
 			System.out.println("自身计算签名:" + sign);
 			System.out.println("请求返回签名:" + requestMap.get("signature"));
 			
