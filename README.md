@@ -332,8 +332,8 @@ items类型的结构如下:
 |支付单号| paymentOrderNo | 111906650000561884 | |
 |核验机构| verDept | null | 验核机构 1-银联 2-网联 3-其他 |
 |支付类型| payType | 2 | 用户支付类型 1-APP 2-PC 3-扫码 4-其他 |
-|支付原始请求| initRequest | ... | |
-|支付原始返回| initResponse | ... | |
+|支付原始请求| initRequest | ... | 支付的原始请求信息，海关179文请按此提供数据|
+|支付原始返回| initResponse | ... | 支付的原始返回信息，海关179文请按此提供数据 |
 |支付完成时间| paymentDatetime | 20190411213822 | 格式为yyyyMMddHHmmss |
 |支付公司海关备案名称| customsPayCompanyName | 通联支付网络服务股份有限公司 | |
 |支付公司海关备案号| customsPayCompanyCode |  312228034T | |
