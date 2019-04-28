@@ -33,7 +33,7 @@
          * [A.3 二维码类型](#a3-二维码类型)
          * [A.4 支付公司代码](#a4-支付公司代码)
 
-<!-- Added by: raphael, at: Sun Apr 28 16:20:43 CST 2019 -->
+<!-- Added by: raphael, at: Sun Apr 28 16:24:48 CST 2019 -->
 
 <!--te-->
 
@@ -667,7 +667,7 @@ items类型的结构如下:
 |字段名称|参数|类型|是否必填|例子|说明|
 |:--|:--|:--|:--|:--|:--|
 |二维码类型| qrCodeType | String | 是 | "WECHATPAY" | 支持微信、支付宝、银联二维码，参见 [A.3](#a3-二维码类型) |
-| 是否需要申报至海关 | needDeclare | Boolean | 否 | true |若不设置该订单是否需要申报海关，则将按照商户在入网时的业务形态决定是否进行申报, 由于现阶段订单是否申报无法更改, 请谨慎提交 |
+| 是否需要申报至海关 | needDeclare | Boolean | 否 | true | 若不设置该订单是否需要申报海关，则将按照商户在入网时的业务形态决定是否进行申报, 由于现阶段订单是否申报无法更改, 请谨慎提交 |
 | 货币代码 | currency | String | 是 | "CNY" | 请固定为CNY |
 | 需申报的电子口岸代码 | customsCode | String | 否 | "HG016" | 调用前请咨询相关技术人员。若需申报则为必填。 |
 | 海关关区代码| customsAreaCode | String | 否 | "5130" | 若需申报且申报海关为广州海关时必填 |
@@ -697,12 +697,12 @@ items类型的结构如下:
   {
   	"qrCodeType" : "WECHATPAY",
   	"needDeclare" : false,
-    "currency": "CNY",
-    "customsCode": "HG022",
-    "customsAreaCode": "5130",
-    "customsJyOrg": "440009",
-    "customsInType": "2",
-    "items": [
+  	"currency": "CNY",
+  	"customsCode": "HG022",
+  	"customsAreaCode": "5130",
+  	"customsJyOrg": "440009",
+  	"customsInType": "2",
+  	"items": [
       {
         "articleNum": "HH00001",
         "itemLink": "http://www.baidu.com",
