@@ -27,13 +27,21 @@
             * [4.1 创建订单并生成支付二维码](#41-创建订单并生成支付二维码)
             * [4.2 生成/刷新二维码](#42-生成刷新二维码)
             * [4.3 订单查询](#43-订单查询)
+         * [5.银行卡快捷支付收单](#5银行卡快捷支付收单)
+            * [5.1 快捷签约申请](#51-快捷签约申请)
+            * [5.2 签约申请确认](#52-签约申请确认)
+            * [5.3 创建订单并使用快捷协议进行支付](#53-创建订单并使用快捷协议进行支付)
+            * [5.4 支付短信确认](#54-支付短信确认)
+            * [5.5 重新申请支付和获取支付短信](#55-重新申请支付和获取支付短信)
+            * [5.6 订单查询](#56-订单查询)
       * [附录](#附录)
          * [A.1 支付状态](#a1-支付状态)
          * [A.2 申报状态](#a2-申报状态)
          * [A.3 二维码类型](#a3-二维码类型)
          * [A.4 支付公司代码](#a4-支付公司代码)
+         * [A.5 银行代码](#a5-银行代码)
 
-<!-- Added by: raphael, at: Sun Apr 28 16:24:48 CST 2019 -->
+<!-- Added by: raphael, at: Sat May  4 21:24:36 CST 2019 -->
 
 <!--te-->
 
@@ -131,7 +139,7 @@ mvn spring-boot:run
 ### 1. 获取调用token接口
 * url: {payzero\_api\_url}/auth/login
 * method: POST
-* request body parameter 
+* request: Body parameter (application/json)
 
 |字段名称|参数|例子|说明|
 |:--|:--|:--|:--|
@@ -165,7 +173,7 @@ mvn spring-boot:run
 
 * url: {payzero\_api\_url}/orderBatch
 * method: POST
-* request body parameter 
+* request: Body parameter (application/json)
 
 请传入一个数组的order类型对象，order类型的结构如下
 
@@ -514,7 +522,7 @@ response:
 
 * url: {payzero\_api\_url}/order/createAndPay
 * method: POST
-* request body parameter 
+* request: Body parameter (application/json)
 
 请传入一个单个的order类型对象，order类型的结构如下
 
@@ -660,7 +668,7 @@ items类型的结构如下:
 
 * url: {payzero\_api\_url}/order/createAndQrCode
 * method: POST
-* request body parameter 
+* request: Body parameter (application/json)
 
 请传入一个单个的order类型对象，order类型的结构如下
 
@@ -728,7 +736,7 @@ items类型的结构如下:
 
 |字段名称|参数| 例子|说明|
 |:--|:--|:--|:--|
-|商户订单号| mchtOrderNo |  19040523834344  |  |
+|商户订单号| mchtOrderNo |  F20190402123  |  |
 |二维码类型| qrCodeType | WECHATPAY | 参见 [A.3](#a3-二维码类型) |
 |二维码url| codeUrl | weixin://wxpay/bizpayurl?pr=X8Zn0PV | |
 |支付公司代码 | psp | EASYPAY | 建议商户在生成二维码的前端商城中根据支付公司代码放上对应支付公司的LOGO, 参见 [A.4](#a4-支付公司代码) |
@@ -797,6 +805,344 @@ items类型的结构如下:
 * response: 
 返回结果为[2.4](#24-单笔订单回执查询) 中orderResultDto，重点关注其payStatus和paymentDatetime即可。
 
+### 5.银行卡快捷支付收单
+#### 5.1 快捷签约申请
+快捷支付需先进行协议的申请，申请时请自行定义请求流水号，之后需根据请求流水号和短信验证码在[5.2 签约申请确认](#52-签约申请确认)中使用
+
+* url: {payzero\_api\_url}/sdbc/agreeApply
+* method: POST
+* request: Body parameter (application/json)
+
+需传入的json对象结构如下:
+
+|字段名称|参数|类型|是否必填|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+|请求流水号| requestId|String | 是| 201905040012 | 由商户自己定义的一个请求流水号，在[5.2 签约申请确认](#52-签约申请确认)中将被使用 | |
+|银行卡账户名称|acctname| String | 是 | 张三 | |
+|银行卡号| acctno | String | 是 | 6217920151050000 | |
+|银行卡类型| accttype | String | 是 | "00" | "00"借记卡, "02"信用卡 |
+|银行代码| bankcode | String | 是 | 0310 | 参见[A.5 银行代码](#a5-银行代码) |
+|身份证号| idno | String | 是 | 310113198010101234 | |
+|手机号| mobile| String | 是 | 13800138000 | |
+|cvv2号| cvv2 | String | 否 | | 信用卡为必填，指卡背面的3位CVV2号 |
+|有效期至| validdate| String | 否| 1904 | 信用卡为必填，指卡的有效期年月，使用格式yyMM(年月）|
+
+* request example:
+
+~~~
+{
+  "acctname": "张三",
+  "acctno": "6217920151050000",
+  "accttype": "00",
+  "bankcode": "0310",
+  "idno": "310113198010101234",
+  "mobile": "13800138000",
+  "requestId": "201905040012"
+}
+~~~
+
+* response:
+
+|字段名称|参数|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+|请求流水号| requestId| 201905040012 | 由商户自己定义的一个请求流水号，在[5.2 签约申请确认](#52-签约申请确认)中将被使用 |
+|银行卡账户名称|acctname|  张三 | |
+|银行卡号| acctno | 6217920151050000 | |
+|银行卡类型| accttype |  "00" | "00"借记卡, "02"信用卡 |
+|银行代码| bankcode |  0310 | 参见[A.5 银行代码](#a5-银行代码) |
+|银行名称| bankname |  上海浦东发展银行 | 参见[A.5 银行代码](#a5-银行代码) |
+|身份证号| idno |  310113198010101234 | |
+|手机号| mobile|  13800138000 | |
+|cvv2号| cvv2 |  | 信用卡时有值，指卡背面的3位CVV2号 |
+|有效期至| validdate|  | 信用卡时有值，指卡的有效期年月，使用格式yyMM(年月）|
+|快捷支付协议号| agreeid | | 此步骤时agreeid返回均为空 |
+|支付公司代码| psp | ALLINPAY | 实际该协议的签约渠道|
+|消息| message | 请输入短信验证码 | 提示信息 | 
+
+~~~
+{
+  "success": true,
+  "errorMsg": null,
+  "errorCode": null,
+  "data": {
+    "requestId": "201905040012",
+    "accttype": "00",
+    "acctno": "6217920151050000",
+    "idno": "310113198010101234",
+    "acctname": "张三",
+    "mobile": "13800138000",
+    "validdate": null,
+    "cvv2": null,
+    "bankcode": "0310",
+    "bankname": "上海浦东发展银行",
+    "agreeid": null,
+    "psp": "ALLINPAY",
+    "message": "请输入短信验证码"
+  }
+}
+~~~
+
+#### 5.2 签约申请确认
+商户侧开发需将第一步所定义的requestId连同用户所收到的短信验证码smsCode提交至本接口，以进行快捷支付签约的确认，获取核心字段快捷支付协议号agreeid并保存，用于未来的支付。
+
+* url: {payzero\_api\_url}/sdbc/agreeConfirm
+* method: POST
+* request: Body parameter (application/json)
+
+需传入的json对象结构如下:
+
+|字段名称|参数|类型|是否必填|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+|请求流水号| requestId|String | 是| 201905040012 | 请使用在[5.1 快捷签约申请](#51-快捷签约申请)中所使用的requestId | 
+|短信验证码| smsCode| String | 是 | 088407 | |
+
+
+* request example: 
+
+~~~
+{
+  "requestId": "201905040012",
+  "smsCode": "088407"
+}
+~~~
+
+* response:
+
+|字段名称|参数|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+|请求流水号| requestId| 201905040012 | 由商户自己定义的一个请求流水号 |
+|银行卡账户名称|acctname|  张三 | |
+|银行卡号| acctno | 6217920151050000 | |
+|银行卡类型| accttype |  "00" | "00"借记卡, "02"信用卡 |
+|银行代码| bankcode |  0310 | 参见[A.5 银行代码](#a5-银行代码) |
+|银行名称| bankname |  上海浦东发展银行 | 参见[A.5 银行代码](#a5-银行代码) |
+|身份证号| idno |  310113198010101234 | |
+|手机号| mobile|  13800138000 | |
+|cvv2号| cvv2 |  | 信用卡时有值，指卡背面的3位CVV2号 |
+|有效期至| validdate|   | 信用卡时有值，指卡的有效期年月，使用格式yyMM(年月）|
+|快捷支付协议号| agreeid | 201905042109498625 | 用于未来快捷支付的核心字段 |
+|支付公司代码| psp | ALLINPAY | 实际该协议的签约渠道|
+|消息| message | 签约成功 | 提示信息 | 
+
+~~~
+{
+  "success": true,
+  "errorMsg": null,
+  "errorCode": null,
+  "data": {
+    "requestId": "201905040012",
+    "accttype": "00",
+    "acctno": "6217920151050000",
+    "idno": "310113198010101234",
+    "acctname": "张三",
+    "mobile": "13800138000",
+    "validdate": null,
+    "cvv2": null,
+    "bankcode": "0310",
+    "bankname": "上海浦东发展银行",
+    "agreeid": "201905042109498625",
+    "psp": "ALLINPAY",
+    "message": "协议支付-账户认证成功"
+  }
+}
+~~~
+
+
+#### 5.3 创建订单并使用快捷协议进行支付
+通过该接口可直接创建单笔订单并使用指定的快捷支付协议(agreeid)进行支付，根据商户的实际签约支付渠道不同，可能有如下两种结果:
+
+* 快捷支付需要短信验证码进行验证，则本步骤返回的支付状态(payStatus)为"PAY\_APPLIED"，商户侧需继续对接接口[5.4 支付短信确认](#54-支付短信确认)
+* 快捷支付不需要短信验证码进行验证，则本步骤返回的支付状态(payStatus)可能为"PAY\_SMS\_CONFIRMED"或"PAY\_SUCCEED"，无需对接[5.4 支付短信确认](#54-支付短信确认),由于渠道限制，支付状态可能无法直接变更为"PAY\_SUCCEED"，商户需等待异步通知或主动使用订单查询接口进行轮询。
+
+调用方式详情:
+
+* url: {payzero\_api\_url}/order/createAndQuickpay
+* method: POST
+* request: Body parameter (application/json)
+
+请传入一个单个的order类型对象，order类型的结构如下
+
+|字段名称|参数|类型|是否必填|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+|协议号| agreeid | String | 是 | "201905041150567656" | 从[5.2](#52-签约申请确认)返回的协议号agreeid |
+| 是否需要申报至海关 | needDeclare | Boolean | 否 | true | 若不设置该订单是否需要申报海关，则将按照商户在入网时的业务形态决定是否进行申报, 由于现阶段订单是否申报无法更改, 请谨慎提交 |
+| 货币代码 | currency | String | 是 | "CNY" | 请固定为CNY |
+| 需申报的电子口岸代码 | customsCode | String | 否 | "HG016" | 调用前请咨询相关技术人员。若需申报则为必填。 |
+| 海关关区代码| customsAreaCode | String | 否 | "5130" | 若需申报且申报海关为广州海关时必填 |
+| 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
+| 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
+| 商户订单编号 | mchtOrderNo | String| 是 | "F20190402123" | 请确保商户订单不重复 |
+| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20T06:57:29.396Z" | Date类型 |
+| 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
+| 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
+| 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
+| 订单额度 | paymentAmount | Long | 是 | 4023 | 请务必注意单位为分 |
+| 订单内主要商品信息 | subject | String | 是 | "XXXX化妆品" | |
+| 订单内商品列表 | items | items类型数组 | 否 | | 仅针对需要托管179文对接接口至Payzero的合作伙伴，需要传输该字段，items的结构参见后续说明 |
+
+items类型的结构如下:
+
+|字段名称|参数|类型|是否必填|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+| 商品名称 | subject | String | 是 | "XXXX口红" | 需179文对接托管客户则必填 |
+| 商品链接 | itemLink | String | 是 | "http://www.baidu.com" | 需179文对接托管客户则必填 |
+| 货号 | articleNum | String | 否 | "WO11111" |  |
+
+
+* request example: 
+
+~~~
+  {
+  	"agreeid" : "201905041150567656",
+  	"needDeclare" : false,
+  	"currency": "CNY",
+  	"customsCode": "HG022",
+  	"customsAreaCode": "5130",
+  	"customsJyOrg": "440009",
+  	"customsInType": "2",
+  	"items": [
+      {
+        "articleNum": "HH00001",
+        "itemLink": "http://www.baidu.com",
+        "subject": "测试商品1"
+      },
+       {
+        "articleNum": "HH00002",
+        "itemLink": "http://www.baidu.com",
+        "subject": "测试商品2"
+      }
+    ],
+    "mchtOrderNo": "F20190402123",
+    "orderDatetime": "2019-04-02T11:11:46.740Z",
+    "payerName": "李白",
+    "payerNumber": "310327198009270027",
+    "payerPhone": "13800138000",
+    "paymentAmount": 3352,
+    "subject": "测试商品1"
+  }
+~~~
+
+* response:
+
+|字段名称|参数| 例子|说明|
+|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo |  F20190402123  |  |
+|支付公司代码 | psp | ALLINPAY | 建议商户在前端商城中根据支付公司代码放上对应支付公司的LOGO, 参见 [A.4](#a4-支付公司代码) |
+|协议号|agreeid| 201905041150567656 | |
+|支付状态|payStatus| PAY_APPLIED| 参见附录[A.1](#a1-支付状态) |
+|消息|message|请输入短信验证码| |
+
+
+~~~
+{
+    "success": true,
+    "errorMsg": null,
+    "errorCode": null,
+    "data": {
+        "mchtOrderNo": "F20190402123",
+        "psp": "ALLINPAY",
+        "agreeid": "201905041150567656",
+        "payStatus": "PAY_APPLIED",
+        "message": "请输入短信验证码"
+    }
+}
+~~~
+#### 5.4 支付短信确认
+调用本接口将用户收取到的短信验证码进行提交完成支付
+
+* url: {payzero\_api\_url}/order/redoQuickpay
+* method: POST
+* request: Body Parameter (application/json)
+
+需传入的json对象结构如下:
+
+|字段名称|参数| 是否必填 |例子|说明|
+|:--|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo | 是 | F20190402123  |  |
+|快捷支付协议号|agreeid | 是 | 201905041150567656  |  |
+
+* request example:
+
+~~~
+{
+	"mchtOrderNo": "F20190402123",
+	"agreeid": "201905041150567656"
+}
+~~~
+
+* response:
+
+|字段名称|参数| 例子|说明|
+|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo |  F20190402123  |  |
+|支付公司代码 | psp | ALLINPAY | 建议商户在前端商城中根据支付公司代码放上对应支付公司的LOGO, 参见 [A.4](#a4-支付公司代码) |
+|协议号|agreeid| 201905041150567656 | |
+|支付状态|payStatus| PAY_APPLIED| 参见附录[A.1](#a1-支付状态) |
+|消息|message| | |
+
+~~~
+{
+    "success": true,
+    "errorMsg": null,
+    "errorCode": null,
+    "data": {
+        "mchtOrderNo": "F20190402123",
+        "psp": "ALLINPAY",
+        "agreeid": "201905041150567656",
+        "payStatus": "PAY_SUCCEED",
+        "message": null
+    }
+}
+~~~
+
+#### 5.5 重新申请支付和获取支付短信
+
+支付的短信验证码一般有效时间为3分钟，超时需重新申请短信验证码。或用户想使用其他银行卡的快捷支付协议进行支付，均可调用本接口。
+
+* response:
+
+|字段名称|参数| 例子|说明|
+|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo |  F20190402123  |  |
+|支付公司代码 | psp | ALLINPAY | 建议商户在前端商城中根据支付公司代码放上对应支付公司的LOGO, 参见 [A.4](#a4-支付公司代码) |
+|协议号|agreeid| 201905041150567656 | |
+|支付状态|payStatus| PAY_APPLIED| 参见附录[A.1](#a1-支付状态) |
+|消息|message| | |
+
+~~~
+{
+    "success": true,
+    "errorMsg": null,
+    "errorCode": null,
+    "data": {
+        "mchtOrderNo": "F20190402123",
+        "psp": "ALLINPAY",
+        "agreeid": "201905041150567656",
+        "payStatus": "PAY_APPLIED",
+        "message": "请输入短信验证码"
+    }
+}
+~~~
+
+
+
+#### 5.6 订单查询
+若同步调用的返回的payStatus为"PAY\_SMS\_CONFIRMED"状态，或商户侧的服务器没有收到订单支付成功的异步消息通知，可以主动查询订单的支付结果信息。
+
+* url: {payzero\_api\_url}/order/queryOrder?mchtOrderNo={mchtOrderNo}
+* method: GET
+* request: Request Params
+
+|字段名称|参数| 是否必填 |例子|说明|
+|:--|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo | 是 | 1904052344  |  |
+
+* response: 
+返回结果为[2.4](#24-单笔订单回执查询) 中orderResultDto，重点关注其payStatus和paymentDatetime。
+
+
+
+
 ## 附录
 
 ### A.1 支付状态
@@ -830,4 +1176,24 @@ items类型的结构如下:
 |:--|:--|:--|
 |ALLINPAY| 通联支付 | [图标url](http://www.allinpay.com/images/logo1.png) |
 |EASYPAY | 易生支付 | [图标url](http://www.bhecard.com/images_new/logo.jpg)|
+
+### A.5 银行代码
+|银行代码|银行名称|
+|:--|:--|
+|0102|中国工商银行|
+|0103|中国农业银行|
+|0104|中国银行|
+|0105|中国建设银行|
+|0301|交通银行|
+|0302|中信银行|
+|0303|中国光大银行|
+|0304|华夏银行|
+|0305|中国民生银行|
+|0306|广东发展银行|
+|0307|平安银行|
+|0308|招商银行|
+|0309|兴业银行|
+|0310|上海浦东发展银行|
+|04012900|上海银行|
+|999|网联测试专用银行|
 
