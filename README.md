@@ -1050,7 +1050,7 @@ items类型的结构如下:
 #### 5.4 支付短信确认
 调用本接口将用户收取到的短信验证码进行提交完成支付
 
-* url: {payzero\_api\_url}/order/redoQuickpay
+* url: {payzero\_api\_url}/order/confirmQuickpay
 * method: POST
 * request: Body Parameter (application/json)
 
@@ -1060,13 +1060,15 @@ items类型的结构如下:
 |:--|:--|:--|:--|:--|
 |商户订单号| mchtOrderNo | 是 | F20190402123  |  |
 |快捷支付协议号|agreeid | 是 | 201905041150567656  |  |
+|短信验证码|smsCode|是| 700336 | |
 
 * request example:
 
 ~~~
 {
 	"mchtOrderNo": "F20190402123",
-	"agreeid": "201905041150567656"
+	"agreeid": "201905041150567656",
+	"smsCode": "700336"
 }
 ~~~
 
@@ -1098,6 +1100,26 @@ items类型的结构如下:
 #### 5.5 重新申请支付和获取支付短信
 
 支付的短信验证码一般有效时间为3分钟，超时需重新申请短信验证码。或用户想使用其他银行卡的快捷支付协议进行支付，均可调用本接口。
+
+* url: {payzero\_api\_url}/order/redoQuickpay
+* method: POST
+* request: Body Parameter (application/json)
+
+需传入的json对象结构如下:
+
+|字段名称|参数| 是否必填 |例子|说明|
+|:--|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo | 是 | F20190402123  |  |
+|快捷支付协议号|agreeid | 是 | 201905041150567656  |  |
+
+* request example:
+
+~~~
+{
+	"agreeid": "201905041150567656",
+	"mchtOrderNo": "F20190402123"
+}
+~~~
 
 * response:
 
