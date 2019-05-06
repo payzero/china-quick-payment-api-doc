@@ -34,6 +34,10 @@
             * [5.4 支付短信确认](#54-支付短信确认)
             * [5.5 重新申请支付和获取支付短信](#55-重新申请支付和获取支付短信)
             * [5.6 订单查询](#56-订单查询)
+         * [6. 无支付推单](#6-无支付推单)
+            * [6.1 创建订单并触发虚拟支付](#61-创建订单并触发虚拟支付)
+            * [6.2 重新进行虚拟支付](#62-重新进行虚拟支付)
+            * [6.3 订单查询](#63-订单查询)
       * [附录](#附录)
          * [A.1 支付状态](#a1-支付状态)
          * [A.2 申报状态](#a2-申报状态)
@@ -41,7 +45,7 @@
          * [A.4 支付公司代码](#a4-支付公司代码)
          * [A.5 银行代码](#a5-银行代码)
 
-<!-- Added by: raphael, at: Sat May  4 23:26:18 CST 2019 -->
+<!-- Added by: raphael, at: Mon May  6 09:57:52 CST 2019 -->
 
 <!--te-->
 
@@ -1162,7 +1166,125 @@ items类型的结构如下:
 * response: 
 返回结果为[2.4](#24-单笔订单回执查询) 中orderResultDto，重点关注其payStatus和paymentDatetime。
 
+### 6. 无支付推单
+#### 6.1 创建订单并触发虚拟支付
 
+调用方式详情:
+
+* url: {payzero\_api\_url}/order/createAndMockpay
+* method: POST
+* request: Body parameter (application/json)
+
+请传入一个单个的order类型对象，order类型的结构如下
+
+|字段名称|参数|类型|是否必填|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+| 是否需要申报至海关 | needDeclare | Boolean | 否 | true | 目前通过无支付推单接口上传的订单，其是否需要垫资模式应始终为true |
+| 货币代码 | currency | String | 是 | "CNY" | 请固定为CNY |
+| 需申报的电子口岸代码 | customsCode | String | 否 | "HG016" | 调用前请咨询相关技术人员。若需申报则为必填。 |
+| 海关关区代码| customsAreaCode | String | 否 | "5130" | 若需申报且申报海关为广州海关时必填 |
+| 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
+| 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
+| 商户订单编号 | mchtOrderNo | String| 是 | "F20190402123" | 请确保商户订单不重复 |
+| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20T06:57:29.396Z" | Date类型 |
+| 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
+| 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
+| 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
+| 订单额度 | paymentAmount | Long | 是 | 4023 | 请务必注意单位为分 |
+| 订单内主要商品信息 | subject | String | 是 | "XXXX化妆品" | |
+| 订单内商品列表 | items | items类型数组 | 否 | | 仅针对需要托管179文对接接口至Payzero的合作伙伴，需要传输该字段，items的结构参见后续说明 |
+
+items类型的结构如下:
+
+|字段名称|参数|类型|是否必填|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+| 商品名称 | subject | String | 是 | "XXXX口红" | 需179文对接托管客户则必填 |
+| 商品链接 | itemLink | String | 是 | "http://www.baidu.com" | 需179文对接托管客户则必填 |
+| 货号 | articleNum | String | 否 | "WO11111" |  |
+
+
+* response:
+
+|字段名称|参数| 例子|说明|
+|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo |  F20190402123  |  |
+|支付公司代码 | psp | LYCHEEPAY | 建议商户在前端商城中根据支付公司代码放上对应支付公司的LOGO, 参见 [A.4](#a4-支付公司代码) |
+|支付状态|payStatus| PAY_SUCCEED| 参见附录[A.1](#a1-支付状态) |
+|消息|message| | |
+
+~~~
+{
+    "success": true,
+    "errorMsg": null,
+    "errorCode": null,
+    "data": {
+        "mchtOrderNo": "F20190402123",
+        "psp": "LYCHEEPAY",
+        "payStatus": "PAY_SUCCEED",
+        "message": null
+    }
+}
+~~~
+
+#### 6.2 重新进行虚拟支付
+
+调用方式详情:
+
+* url: {payzero\_api\_url}/order/redoMockpay
+* method: POST
+* request: Body parameter (application/json)
+
+传入json对象如下:
+
+|字段名称|参数|类型|是否必填|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+|商户订单号|mchtOrderNo| String |  是 | |
+
+* request example:
+
+~~~
+{
+	"mchtOrderNo": "F20190402123"
+}
+~~~
+
+* response:
+
+|字段名称|参数| 例子|说明|
+|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo |  F20190402123  |  |
+|支付公司代码 | psp | LYCHEEPAY | 建议商户在前端商城中根据支付公司代码放上对应支付公司的LOGO, 参见 [A.4](#a4-支付公司代码) |
+|支付状态|payStatus| PAY_SUCCEED| 参见附录[A.1](#a1-支付状态) |
+|消息|message| | |
+
+~~~
+{
+    "success": true,
+    "errorMsg": null,
+    "errorCode": null,
+    "data": {
+        "mchtOrderNo": "F20190402123",
+        "psp": "LYCHEEPAY",
+        "payStatus": "PAY_SUCCEED",
+        "message": null
+    }
+}
+~~~
+
+#### 6.3 订单查询
+
+可以主动查询订单的支付结果信息。
+
+* url: {payzero\_api\_url}/order/queryOrder?mchtOrderNo={mchtOrderNo}
+* method: GET
+* request: Request Params
+
+|字段名称|参数| 是否必填 |例子|说明|
+|:--|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo | 是 | 1904052344  |  |
+
+* response: 
+返回结果为[2.4](#24-单笔订单回执查询) 中orderResultDto，重点关注其payStatus和paymentDatetime。
 
 
 ## 附录
@@ -1198,6 +1320,7 @@ items类型的结构如下:
 |:--|:--|:--|
 |ALLINPAY| 通联支付 | [图标url](http://www.allinpay.com/images/logo1.png) |
 |EASYPAY | 易生支付 | [图标url](http://www.bhecard.com/images_new/logo.jpg)|
+|LYCHEEPAY| 快付通 | [图标url](https://www.kftpay.com.cn/templets/kuaifutong/images/img_logo.png)|
 
 ### A.5 银行代码
 |银行代码|银行名称|
