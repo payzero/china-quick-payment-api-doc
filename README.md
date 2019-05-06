@@ -45,7 +45,7 @@
          * [A.4 支付公司代码](#a4-支付公司代码)
          * [A.5 银行代码](#a5-银行代码)
 
-<!-- Added by: raphael, at: Mon May  6 09:57:52 CST 2019 -->
+<!-- Added by: raphael, at: Mon May  6 10:02:00 CST 2019 -->
 
 <!--te-->
 
@@ -1201,6 +1201,38 @@ items类型的结构如下:
 | 商品名称 | subject | String | 是 | "XXXX口红" | 需179文对接托管客户则必填 |
 | 商品链接 | itemLink | String | 是 | "http://www.baidu.com" | 需179文对接托管客户则必填 |
 | 货号 | articleNum | String | 否 | "WO11111" |  |
+
+* request example:
+
+~~~
+{
+  	"needDeclare" : true,
+    "currency": "CNY",
+    "customsCode": "HG022",
+    "customsAreaCode": "5130",
+    "customsJyOrg": "440009",
+    "customsInType": "2",
+    "items": [
+      {
+        "articleNum": "HH00001",
+        "itemLink": "http://www.baidu.com",
+        "subject": "测试商品1"
+      },
+       {
+        "articleNum": "HH00002",
+        "itemLink": "http://www.baidu.com",
+        "subject": "测试商品2"
+      }
+    ],
+    "mchtOrderNo": "F20190402123",
+    "orderDatetime": "2019-04-02T11:11:46.740Z",
+    "payerName": "张三",
+    "payerNumber": "310113198010101234",
+    "payerPhone": "13800138000",
+    "paymentAmount": 4023,
+    "subject": "测试商品1"
+  }
+~~~
 
 
 * response:
