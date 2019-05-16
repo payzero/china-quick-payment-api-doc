@@ -607,7 +607,7 @@ items类型的结构如下:
 #### 2.7 单笔订单请求重新安排支付
 当收到订单支付失败的异步通知时，例如因银行卡实际余额不够（和系统中记录的余额不匹配等原因），商户可能需要线下解决这些问题，当问题解决后，可通过调用该接口重新申请对订单进行支付。若申请成功，该订单将进入待支付队列等待支付，支付预计完成时间30秒-30分钟不等。
 
-* url: {payzero\_api\_url}/order/arrangeTask?mchtOrderNo={mchtOrderNo}
+* url: {payzero\_api\_url}/order/arrangePay?mchtOrderNo={mchtOrderNo}
 * method: GET
 * request: Request Params为商户订单号mchtOrderNo
 
