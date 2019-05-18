@@ -190,7 +190,7 @@ mvn spring-boot:run
 | 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
 | 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
 | 商户订单编号 | mchtOrderNo | String| 是 | "2019032000000123" | 请确保商户订单不重复 |
-| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20T06:57:29.396Z" | Date类型 |
+| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
 | 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
 | 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
 | 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
@@ -230,7 +230,7 @@ items类型的结构如下:
       }
     ],
     "mchtOrderNo": "F20190402123",
-    "orderDatetime": "2019-04-02T11:11:46.740Z",
+    "orderDatetime": "2019-04-02 11:11:46",
     "payerName": "李白",
     "payerNumber": "310327198009270027",
     "payerPhone": "13800138000",
@@ -244,7 +244,7 @@ items类型的结构如下:
     "customsJyOrg": "440009",
     "customsInType": "2",
     "mchtOrderNo": "F20190402124",
-    "orderDatetime": "2019-04-02T11:11:46.740Z",
+    "orderDatetime": "2019-04-02 11:11:46",
     "payerName": "杜甫",
     "payerNumber": "360104199010101234",
     "payerPhone": "13300000000",
@@ -539,7 +539,7 @@ response:
 | 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
 | 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
 | 商户订单编号 | mchtOrderNo | String| 是 | "F20190402123" | 请确保商户订单不重复 |
-| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20T06:57:29.396Z" | Date类型 |
+| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
 | 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
 | 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
 | 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
@@ -578,7 +578,7 @@ items类型的结构如下:
       }
     ],
     "mchtOrderNo": "F20190402123",
-    "orderDatetime": "2019-04-02T11:11:46.740Z",
+    "orderDatetime": "2019-04-02 11:11:46",
     "payerName": "李白",
     "payerNumber": "310327198009270027",
     "payerPhone": "13800138000",
@@ -687,7 +687,7 @@ items类型的结构如下:
 | 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
 | 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
 | 商户订单编号 | mchtOrderNo | String| 是 | "F20190402123" | 请确保商户订单不重复 |
-| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20T06:57:29.396Z" | Date类型 |
+| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
 | 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
 | 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
 | 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
@@ -728,7 +728,7 @@ items类型的结构如下:
       }
     ],
     "mchtOrderNo": "F20190402123",
-    "orderDatetime": "2019-04-02T11:11:46.740Z",
+    "orderDatetime": "2019-04-02 11:11:46",
     "payerName": "李白",
     "payerNumber": "310327198009270027",
     "payerPhone": "13800138000",
@@ -977,7 +977,7 @@ items类型的结构如下:
 | 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
 | 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
 | 商户订单编号 | mchtOrderNo | String| 是 | "F20190402123" | 请确保商户订单不重复 |
-| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20T06:57:29.396Z" | Date类型 |
+| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
 | 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
 | 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
 | 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
@@ -1018,7 +1018,7 @@ items类型的结构如下:
       }
     ],
     "mchtOrderNo": "F20190402123",
-    "orderDatetime": "2019-04-02T11:11:46.740Z",
+    "orderDatetime": "2019-04-02 11:11:46",
     "payerName": "李白",
     "payerNumber": "310327198009270027",
     "payerPhone": "13800138000",
@@ -1187,7 +1187,7 @@ items类型的结构如下:
 | 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
 | 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
 | 商户订单编号 | mchtOrderNo | String| 是 | "F20190402123" | 请确保商户订单不重复 |
-| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20T06:57:29.396Z" | Date类型 |
+| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
 | 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
 | 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
 | 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
@@ -1226,7 +1226,7 @@ items类型的结构如下:
       }
     ],
     "mchtOrderNo": "F20190402123",
-    "orderDatetime": "2019-04-02T11:11:46.740Z",
+    "orderDatetime": "2019-04-02 11:11:46",
     "payerName": "张三",
     "payerNumber": "310113198010101234",
     "payerPhone": "13800138000",
