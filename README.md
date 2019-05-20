@@ -364,7 +364,7 @@ items类型的结构如下:
 
 * url: {payzero\_api\_url}/order/feedback?mchtOrderNo={mchtOrderNo}
 * method: GET
-* request: Request Param {mchtOrderNo}为商家订单号
+* request: Query Param {mchtOrderNo}为商家订单号
 
 
 * response: orderResultDto
@@ -609,7 +609,7 @@ items类型的结构如下:
 
 * url: {payzero\_api\_url}/order/arrangePay?mchtOrderNo={mchtOrderNo}
 * method: GET
-* request: Request Params为商户订单号mchtOrderNo
+* request: Query Params为商户订单号mchtOrderNo
 
 |字段名称|参数| 是否必填 |例子|说明|
 |:--|:--|:--|:--|:--|
@@ -765,7 +765,7 @@ items类型的结构如下:
 
 * url: {payzero\_api\_url}/order/qrCode?mchtOrderNo={mchtOrderNo}&qrCodeType={qrCodeType}
 * method: GET
-* request: Request Params
+* request: Query Params
 
 |字段名称|参数| 是否必填 |例子|说明|
 |:--|:--|:--|:--|:--|
@@ -801,7 +801,7 @@ items类型的结构如下:
 
 * url: {payzero\_api\_url}/order/queryOrder?mchtOrderNo={mchtOrderNo}
 * method: GET
-* request: Request Params
+* request: Query Params
 
 |字段名称|参数| 是否必填 |例子|说明|
 |:--|:--|:--|:--|:--|
@@ -1158,7 +1158,7 @@ items类型的结构如下:
 
 * url: {payzero\_api\_url}/order/queryOrder?mchtOrderNo={mchtOrderNo}
 * method: GET
-* request: Request Params
+* request: Query Params
 
 |字段名称|参数| 是否必填 |例子|说明|
 |:--|:--|:--|:--|:--|
@@ -1310,7 +1310,7 @@ items类型的结构如下:
 
 * url: {payzero\_api\_url}/order/queryOrder?mchtOrderNo={mchtOrderNo}
 * method: GET
-* request: Request Params
+* request: Query Params
 
 |字段名称|参数| 是否必填 |例子|说明|
 |:--|:--|:--|:--|:--|
@@ -1318,6 +1318,51 @@ items类型的结构如下:
 
 * response: 
 返回结果为[2.4](#24-单笔订单回执查询) 中orderResultDto，重点关注其payStatus和paymentDatetime。
+
+---
+
+### 7 实名认证
+#### 7.1 身份证二要素认证
+本接口用于对身份证姓名及身份证号进行二要素认证。为方便测试，在payzero测试环境中，可使用如下数据进行测试: 1开头的身份证号表示认证通过，2开头的身份证表示身份证号不在库中，3开头的身份证号表示名字不合法，4开头的身份证号表示身份证号不合法，其他情况表示认证不通过。
+
+
+* url: {payzero\_api\_url}/realPerson/val?idno={idno}&name={name}
+* method: GET
+* request: Query Params
+
+|字段名称|参数| 是否必填 |例子|说明|
+|:--|:--|:--|:--|:--|
+|身份证号| idno | 是 |110113198010101234  | 在payzero测试环境中，可使用如下数据进行测试: 1开头的身份证号表示认证通过，2开头的身份证表示身份证号不在库中，3开头的身份证号表示名字不合法，4开头的身份证号表示身份证号不合法，其他情况表示认证不通过。 |
+|姓名| name | 是 | 李白 | |
+ 
+* response: 
+
+|字段名称|参数| 例子|说明|
+|:--|:--|:--|:--|
+|实名认证订单号| realPersonValidationOrderId | 647ff383-06c1-4cf7-9a4a-6a58566efe5d  | 本次实名认证请求的唯一标识 |
+|姓名 | name | 李白 | |
+|身份证号| idno | 110113198010101234 |  |
+|出生日期|birth|19801010 | |
+|性别|sex| 男||
+|地址|addr| 黑龙江省鹤岗市绥滨县 | |
+|认证结果|result| PASS | 认证结果代码参见[A.7 实名认证结果代码](#a7-实名认证结果代码)
+
+~~~
+{
+  "success": true,
+  "errorMsg": null,
+  "errorCode": null,
+  "data": {
+    "realPersonValidationOrderId": "647ff383-06c1-4cf7-9a4a-6a58566efe5d",
+    "name": "李白",
+    "idno": "110113198010101234",
+    "birth": "19801010",
+    "addr": "黑龙江省鹤岗市绥滨县",
+    "sex": "男",
+    "result": "PASS"
+  }
+}
+~~~
 
 
 ## 附录
@@ -1390,5 +1435,15 @@ items类型的结构如下:
 |HG026|天津电子口岸（总署版）||
 |HG044|山东海关 ||
 |HG055|福州海关 (总署版)|其他总署版亦例如HG016福州亦可放行|
+
+### A.7 实名认证结果代码
+
+|认证结果代码|说明|
+|:--|:--|
+|PASS|实名认证通过|
+|NOT_PASS|实名认证不通过|
+|NAME_INVALID|名字不合法|
+|IDNO_INVALID|身份证号不合法|
+|CANNOT_FIND_ID|身份证号不在库中|
 
 
