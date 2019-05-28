@@ -672,7 +672,8 @@ items类型的结构如下:
 #### 3.2 消息签名方法
 将返回信息中的timestamp, msgBody以及商户自己保管的signToken三者以字典顺序进行排序并拼接成1个字符串，对字符串进行SHA1算法计算获取Hash值作为签名。
 
-可参考本项目提供的SDK中的相关代码。
+* Java: 可参考本项目提供的SDK中的相关代码。
+* PHP: 下载相关签名用SHA1签名函数: <a href='https://github.com/payzero/china-quick-payment-api-doc/blob/master/php.zip?raw=true'>下载相关文件</a>
 
 #### 3.3 消息重发机制
 所有消息通知，商户服务器均需回复String "OK"在返回体中，否则Payzero将认为商户未接收到该通知。未成功发送的消息，将被共计重发5次，分别为第一次消息发送后的1m, 5m, 10m, 1h, 6h后重试直至商户服务器发送OK的返回。
