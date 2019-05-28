@@ -145,14 +145,19 @@ mvn spring-boot:run
 ## 接口介绍 
 
 ### 1. 获取调用token接口
+通过本接口获取调用后续API所需的token。初次调用前请登录商户后台，从右上角图标进入商户配置页面生成AppId与AppKey (AppKey只会显示一次，请妥善保管，重新生成AppKey将造成旧AppKey无法使用)，获取方式如下图所示:
+
+![](doc/merchant_config.png)
+![](doc/merchant_api_config.png)
+
 * url: {payzero\_api\_url}/auth/login
 * method: POST
 * request: Body parameter (application/json)
 
 |字段名称|参数|例子|说明|
 |:--|:--|:--|:--|
-|用户名 | username| "abc" |  |
-|密码 | password| "p@ssw0rd" |  |
+|用户名 | username| "abc" | 在商户后台所获取的APP Id |
+|密码 | password| "p@ssw0rd" | 在商户后台所获取的APP Key |
 
 * POSTMAN调用示例:
 ![](doc/auth.jpg)
