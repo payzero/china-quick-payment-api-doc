@@ -63,10 +63,14 @@ QuickPay API整体采用RESTful API的风格，以application/json格式进行�
 本文档中所有的HTTP方法（无论其是GET/POST/DELETE/PUT或任何其他方法），其HTTP HEADER中必须加入OAuth2风格的Http header属性:
 
 ~~~
-Authorization: Bearer xxxxxxxxxxx
+Authorization: Bearer 获取到的token
 ~~~
 
-其中xxxxxxxxxxx为Payzero用于验证调用方身份的JWT风格的token, 该token的获得是通过使用Payzero分配的username和password并调用登录接口。其有效时间为4小时，且JWT本身包含了过期的时间的信息。关于JWT token，可参考 <https://jwt.io/>。4小时到期之前，可重新调用登录接口获取token，token之间均为独立关系，获取新的token不会影响未过期的老token的使用。
+除Login外所有请求均需带上这个Authroization的HTTP请求头部，在POSTMAN中其表现形式如下，开发人员可根据自身使用的开发语言在HTTP请求头部组装该key-value:
+
+![](doc/postman_header.png)
+
+获取到的token为Payzero用于验证调用方身份的JWT风格的token, 该token的获得是通过使用Payzero分配的APP Id和APP Key并调用登录接口。其有效时间为4小时，且JWT本身包含了过期的时间的信息。关于JWT token，可参考 <https://jwt.io/>。4小时到期之前，可重新调用登录接口获取token，token之间均为独立关系，获取新的token不会影响未过期的老token的使用。
 
 ### 返回格式说明
 
@@ -78,7 +82,7 @@ Authorization: Bearer xxxxxxxxxxx
 |400|BAD REQUEST, 通常用于请求的参数不正确|
 |405|METHOD NOT ALLOWED, HTTP方法使用错误，例如错误的使用POST调用了一个GET方法|
 |401|UNAUTHORIZED, access_token不正确|
-|403|FORBIDDEN, 权限不足|
+|403|FORBIDDEN, 权限不足，出现此错误时，请再看一遍[技术综述](#技术综述),检查是否已按要求将Authorization相关的key-value加入HTTP请求头部中|
 |404|NOT FOUND, 不存在的接口url|
 |500|INTERNAL SERVER ERROR, 服务器内部错误|
 
