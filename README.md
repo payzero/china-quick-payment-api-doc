@@ -42,6 +42,9 @@
             * [7.1 身份证二要素认证](#71-身份证二要素认证)
          * [8.支付信息推单](#8支付信息推单)
             * [8.1 支付信息海关推单](#81-支付信息海关推单)
+         * [9.退款](#9退款)
+            * [9.1 退款申请](#91-退款申请)
+            * [9.2 退款状态查询](#92-退款状态查询)
       * [附录A](#附录a)
          * [A.1 支付状态](#a1-支付状态)
          * [A.2 申报状态](#a2-申报状态)
@@ -50,10 +53,11 @@
          * [A.5 银行代码](#a5-银行代码)
          * [A.6 海关及电子口岸代码](#a6-海关及电子口岸代码)
          * [A.7 实名认证结果代码](#a7-实名认证结果代码)
+         * [A.8 退款状态代码](#a8-退款状态代码)
       * [附录B](#附录b)
          * [B.1 银行卡绑定流程说明](#b1-银行卡绑定流程说明)
 
-<!-- Added by: raphael, at: Tue Jun 25 23:07:59 CST 2019 -->
+<!-- Added by: raphael, at: Thu Jun 27 16:46:06 CST 2019 -->
 
 <!--te-->
 
@@ -1456,6 +1460,91 @@ items类型的结构如下:
 }
 ~~~
 
+### 9.退款
+#### 9.1 退款申请
+请注意如果订单是经由[2.自动支付相关接口](#2-自动支付相关接口)或者[6.无支付推单](#6-无支付推单)提交至系统，则无法进行退款。退款将从商户的现金账户中扣除申请的退款额度，若现金账户余额不足将导致退款失败。
+
+接口技术参数如下:
+
+* url: {payzero\_api\_url}/order/refund
+* method: POST
+* request: Body parameter (application/json)
+
+|字段名称| 参数| 类型 | 是否必填 |例子|说明|
+|:--|:--|:--|:--|:--|:--|
+| 商户原始订单编号 | mchtOrderNo | String | 是 | "S20190501"  | 商户订单编号，该订单号应已完成支付（即通过查询可查询到支付成功状态） |
+| 退款请求编号 | mchtRefundOrderNo | String | 是 | "REFUND_S20190501" | 商户对该退款请求的编号，退款请求编号不能重复 |
+| 退款额度(分) | refundAmount | Long | 是 | 1225 | 退款额度，单位为分 |
+
+* request example:
+
+~~~
+{
+  "mchtOrderNo": "S20190501",
+  "mchtRefundOrderNo": "REFUND_S20190501",
+  "refundAmount": 1225
+}
+~~~
+
+* response: 
+
+|字段名称| 参数| 类型 |例子|说明|
+|:--|:--|:--|:--|:--|:--|
+| 商户原始订单编号 | mchtOrderNo | String| "S20190501"  | 商户订单编号|
+| 退款请求编号 | mchtRefundOrderNo | String | "REFUND_S20190501" | 商户对该退款请求的编号，退款请求编号不能重复 |
+| 退款额度(分) | refundAmount | Long | 1225 | 退款额度，以分为单位 |
+| 退款状态 | refundStatus | String | "REFUND_REQUESTED" | 参见[A.8 退款状态代码](#a8-退款状态代码), 一般正常返回REFUND_REQUESTED状态，需后置进行退款状态查询。 |
+
+~~~
+{
+  "success": true,
+  "errorMsg": null,
+  "errorCode": null,
+  "data": {
+    "mchtOrderNo": "S20190501",
+    "mchtRefundOrderNo": "REFUND_S20190501",
+    "refundAmount": 1225,
+    "refundStatus": "REFUND_REQUESTED"
+  }
+}
+~~~
+
+#### 9.2 退款状态查询
+
+该接口用于查询退款状态，请注意退款成功状态仅表示退款已成功被渠道受理（例如支付宝、微信支付、银联等），并不代表款项已退回至用户处。具体用户收到退款的时间无法查询，一般在退款状态变更为退款成功后1个工作日。
+
+接口技术参数如下:
+
+* url: {payzero\_api\_url}/order/refund?mchtRefundOrderNo={mchtRefundOrderNo}
+* method: GET
+* request: Query Params
+
+|字段名称|参数| 是否必填 |例子|说明|
+|:--|:--|:--|:--|:--|
+|退款请求编号| mchtRefundOrderNo | 是 | "REFUND_S20190501"  |  |
+
+* response: 
+
+|字段名称| 参数| 类型 |例子|说明|
+|:--|:--|:--|:--|:--|:--|
+| 商户原始订单编号 | mchtOrderNo | String| "S20190501"  | 商户订单编号 |
+| 退款请求编号 | mchtRefundOrderNo | String | "REFUND_S20190501" | 商户对该退款请求的编号 |
+| 退款额度(分) | refundAmount | Long | 1225 | 退款额度，以分为单位 |
+| 退款状态 | refundStatus | String | "REFUND_SUCCEED" | 参见[A.8 退款状态代码](#a8-退款状态代码)|
+
+~~~
+{
+  "success": true,
+  "errorMsg": null,
+  "errorCode": null,
+  "data": {
+    "mchtOrderNo": "S20190501",
+    "mchtRefundOrderNo": "REFUND_S20190501",
+    "refundAmount": 1225,
+    "refundStatus": "REFUND_SUCCEED"
+  }
+}
+~~~
 
 
 ## 附录A
@@ -1538,6 +1627,15 @@ items类型的结构如下:
 |NAME_INVALID|名字不合法|
 |IDNO_INVALID|身份证号不合法|
 |CANNOT_FIND_ID|身份证号不在库中|
+
+### A.8 退款状态代码
+
+|退款状态代码|说明|
+|:--|:--|
+|REFUND_INIT|收到退款请求|
+|REFUND_REQUESTED|退款中|
+|REFUND_SUCCEED|退款成功|
+|REFUND_FAILED|退款失败|
 
 
 ## 附录B
