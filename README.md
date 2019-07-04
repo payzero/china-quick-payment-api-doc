@@ -69,7 +69,7 @@ QuickPay API整体采用RESTful API的风格，以application/json格式进行�
 Authorization: Bearer 获取到的token
 ~~~
 
-除Login外所有请求均需带上这个Authroization的HTTP请求头部，在POSTMAN中其表现形式如下，开发人员可根据自身使用的开发语言在HTTP请求头部组装该key-value:
+除Login外所有请求均需带上这个Authorization的HTTP请求头部，在POSTMAN中其表现形式如下，开发人员可根据自身使用的开发语言在HTTP请求头部组装该key-value:
 
 ![](doc/postman_header.png)
 
