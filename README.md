@@ -213,7 +213,7 @@ mvn spring-boot:run
 | 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
 | 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
 | 订单额度 | paymentAmount | Long | 是 | 4023 | 请务必注意单位为分 |
-| 订单内主要商品信息 | subject | String | 是 | "XXXX化妆品" | |
+| 订单内主要商品信息 | subject | String | 是 | "XXXX化妆品" | 长度不超过200个字符 |
 | 接收支付异步通知url | notifyUrl | String | 否 | | 本字段可不填，若不填写，异步通知将发送至本文档第三章[3. 接收异步通知](#3-接收异步通知)在商户后台所填写的商户级别的异步通知url中。若本字段填写则以本字段填写内容为准。消息体会进行签名，签名方式参考第三章。 |
 | 订单内商品列表 | items | items类型数组 | 否 | | 可空 |
 
@@ -221,7 +221,7 @@ items类型的结构如下:
 
 |字段名称|参数|类型|是否必填|例子|说明|
 |:--|:--|:--|:--|:--|:--|
-| 商品名称 | subject | String | 是 | "XXXX口红" |  |
+| 商品名称 | subject | String | 是 | "XXXX口红" | 长度不超过200个字符 |
 | 商品链接 | itemLink | String | 是 | "http://www.baidu.com" |  |
 | 货号 | articleNum | String | 否 | "WO11111" |  |
 
@@ -571,7 +571,7 @@ response:
 | 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
 | 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
 | 订单额度 | paymentAmount | Long | 是 | 4023 | 请务必注意单位为分 |
-| 订单内主要商品信息 | subject | String | 是 | "XXXX化妆品" | |
+| 订单内主要商品信息 | subject | String | 是 | "XXXX化妆品" | 长度不超过200个字符 |
 | 接收支付异步通知url | notifyUrl | String | 否 | | 本字段可不填，若不填写，异步通知将发送至本文档第三章[3. 接收异步通知](#3-接收异步通知)在商户后台所填写的商户级别的异步通知url中。若本字段填写则以本字段填写内容为准。消息体会进行签名，签名方式参考第三章。 |
 | 订单内商品列表 | items | items类型数组 | 否 | | 可空 |
 
@@ -579,7 +579,7 @@ items类型的结构如下:
 
 |字段名称|参数|类型|是否必填|例子|说明|
 |:--|:--|:--|:--|:--|:--|
-| 商品名称 | subject | String | 是 | "XXXX口红" |  |
+| 商品名称 | subject | String | 是 | "XXXX口红" | 长度不超过200个字符 |
 | 商品链接 | itemLink | String | 是 | "http://www.baidu.com" |  |
 | 货号 | articleNum | String | 否 | "WO11111" |  |
 
@@ -732,7 +732,7 @@ items类型的结构如下:
 | 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
 | 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
 | 订单额度 | paymentAmount | Long | 是 | 4023 | 请务必注意单位为分 |
-| 订单内主要商品信息 | subject | String | 是 | "XXXX化妆品" | |
+| 订单内主要商品信息 | subject | String | 是 | "XXXX化妆品" | 长度不超过200个字符 |
 | 接收支付异步通知url | notifyUrl | String | 否 | | 本字段可不填，若不填写，异步通知将发送至本文档第三章[3. 接收异步通知](#3-接收异步通知)在商户后台所填写的商户级别的异步通知url中。若本字段填写则以本字段填写内容为准。消息体会进行签名，签名方式参考第三章。 |
 | 订单内商品列表 | items | items类型数组 | 否 | | 可空 |
 
@@ -740,7 +740,7 @@ items类型的结构如下:
 
 |字段名称|参数|类型|是否必填|例子|说明|
 |:--|:--|:--|:--|:--|:--|
-| 商品名称 | subject | String | 是 | "XXXX口红" |  |
+| 商品名称 | subject | String | 是 | "XXXX口红" | 长度不超过200个字符 |
 | 商品链接 | itemLink | String | 是 | "http://www.baidu.com" |  |
 | 货号 | articleNum | String | 否 | "WO11111" |  |
 
@@ -1023,7 +1023,7 @@ items类型的结构如下:
 | 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
 | 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
 | 订单额度 | paymentAmount | Long | 是 | 4023 | 请务必注意单位为分 |
-| 订单内主要商品信息 | subject | String | 是 | "XXXX化妆品" | |
+| 订单内主要商品信息 | subject | String | 是 | "XXXX化妆品" | 长度不超过200个字符 |
 | 接收支付异步通知url | notifyUrl | String | 否 | | 本字段可不填，若不填写，异步通知将发送至本文档第三章[3. 接收异步通知](#3-接收异步通知)在商户后台所填写的商户级别的异步通知url中。若本字段填写则以本字段填写内容为准。消息体会进行签名，签名方式参考第三章。 |
 | 订单内商品列表 | items | items类型数组 | 否 | | 可空 |
 
@@ -1031,7 +1031,7 @@ items类型的结构如下:
 
 |字段名称|参数|类型|是否必填|例子|说明|
 |:--|:--|:--|:--|:--|:--|
-| 商品名称 | subject | String | 是 | "XXXX口红" |  |
+| 商品名称 | subject | String | 是 | "XXXX口红" | 长度不超过200个字符 |
 | 商品链接 | itemLink | String | 是 | "http://www.baidu.com" |  |
 | 货号 | articleNum | String | 否 | "WO11111" |  |
 
@@ -1236,7 +1236,7 @@ items类型的结构如下:
 | 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
 | 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
 | 订单额度 | paymentAmount | Long | 是 | 4023 | 请务必注意单位为分 |
-| 订单内主要商品信息 | subject | String | 是 | "XXXX化妆品" | |
+| 订单内主要商品信息 | subject | String | 是 | "XXXX化妆品" | 长度不超过200个字符 |
 | 接收支付异步通知url | notifyUrl | String | 否 | | 本字段可不填，若不填写，异步通知将发送至本文档第三章[3. 接收异步通知](#3-接收异步通知)在商户后台所填写的商户级别的异步通知url中。若本字段填写则以本字段填写内容为准。消息体会进行签名，签名方式参考第三章。 |
 | 订单内商品列表 | items | items类型数组 | 否 | | 可空 |
 
@@ -1244,7 +1244,7 @@ items类型的结构如下:
 
 |字段名称|参数|类型|是否必填|例子|说明|
 |:--|:--|:--|:--|:--|:--|
-| 商品名称 | subject | String | 是 | "XXXX口红" |  |
+| 商品名称 | subject | String | 是 | "XXXX口红" | 长度不超过200个字符  |
 | 商品链接 | itemLink | String | 是 | "http://www.baidu.com" |  |
 | 货号 | articleNum | String | 否 | "WO11111" |  |
 
