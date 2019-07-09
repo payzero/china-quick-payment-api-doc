@@ -413,7 +413,7 @@ items类型的结构如下:
 |支付原始请求| initRequest | ... | 支付的原始请求信息，海关179文请按此提供数据|
 |支付原始返回| initResponse | ... | 支付的原始返回信息，海关179文请按此提供数据 |
 |支付完成时间| paymentDatetime | 20190411213822 | 格式为yyyyMMddHHmmss |
-|支付公司海关备案名称| customsPayCompanyName | 通联支付网络服务股份有限公司 | |
+|支付公司海关备案名称| customsPayCompanyName | XX支付网络服务股份有限公司 | |
 |支付公司海关备案号| customsPayCompanyCode |  312228034T | |
 
 ~~~
@@ -437,7 +437,7 @@ items类型的结构如下:
     "initRequest": "https://vsp.allinpay.com/apiweb/qpay/payapplyagree[data:{agreeid=201902221443545123, amount=1, appid=00152305, currency=CNY, cusid=55152104816ZLVW, notifyurl=https://dev-quickpay-api.payzero.cn/quickpay_notify/ALLINPAY/pengma, orderid=2019041000011, randomstr=1554989889665, subject=YYYYYYYY-口红, version=11}]",
     "initResponse": "{\"retcode\":\"SUCCESS\",\"retmsg\":null,\"randomstr\":\"917005450382\",\"sign\":\"B74D60CEB7141B3CB26FD4D7A5BD7B29\",\"orderid\":\"2019041000011\",\"trxstatus\":\"1999\",\"errmsg\":\"请输入短信验证码\",\"trxid\":null,\"chnltrxid\":null,\"fintime\":null,\"thpinfo\":\"{\\\"sign\\\":\\\"\\\",\\\"tphtrxcrtime\\\":\\\"\\\",\\\"tphtrxid\\\":0,\\\"trxflag\\\":\\\"trx\\\",\\\"trxsn\\\":\\\"\\\"}\"}",
     "paymentDatetime": "20190411213822",
-    "customsPayCompanyName": "通联支付网络服务股份有限公司",
+    "customsPayCompanyName": "XX支付网络服务股份有限公司",
     "customsPayCompanyCode": "312228034T"
   }
 }
@@ -499,7 +499,7 @@ response:
         "initRequest": null,
         "initResponse": null,
         "paymentDatetime": 20190313124233,
-        "customsPayCompanyName": "通联支付网络服务股份有限公司",
+        "customsPayCompanyName": "XX支付网络服务股份有限公司",
         "customsPayCompanyCode": "312228034T"
       },
       {
@@ -518,7 +518,7 @@ response:
         "initRequest": null,
         "initResponse": null,
         "paymentDatetime": 20190313124233,
-        "customsPayCompanyName": "通联支付网络服务股份有限公司",
+        "customsPayCompanyName": "XX支付网络服务股份有限公司",
         "customsPayCompanyCode": "312228034T"
       },
       {
@@ -537,7 +537,7 @@ response:
         "initRequest": null,
         "initResponse": null,
         "paymentDatetime": "20190313124233",
-        "customsPayCompanyName": "通联支付网络服务股份有限公司",
+        "customsPayCompanyName": "XX支付网络服务股份有限公司",
         "customsPayCompanyCode": "312228034T"
       }
     ],
