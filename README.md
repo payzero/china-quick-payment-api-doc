@@ -1567,7 +1567,7 @@ items类型的结构如下:
 |字段名称|参数|类型|是否必填|例子|说明|
 |:--|:--|:--|:--|:--|:--|
 |h5支付类型| h5PayType | String | 是 | "WECHATPAY" | 支持微信公众号、支付宝服务窗，参见 [A.9](#a9-H5支付类型) |
-| openId | openId | String | 是 | "oALT01I3_3N53eTx03kVgerL6iSU" | 微信渠道 通过OAuth2.0协议标准得到的微信 open_id [参考文档](https://open.weixin.qq.com/cgi%02bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=&lang=zh_CN); 支付宝渠道 通过通过 OAuth2.0 协议标准得到支付宝买家的唯一用户号（ 2088 开头的 16 位纯数字） [参考文档](https://docs.open.alipay.com/220/105337) |
+| openId | openId | String | 是 | "oALT01I3_3N53eTx03kVgerL6iSU" | 微信渠道: 通过OAuth2.0协议标准得到的微信open_id [参考文档](https://open.weixin.qq.com/cgi%02bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=&lang=zh_CN); 支付宝渠道: 通过OAuth2.0协议标准得到支付宝买家的唯一用户号（ 2088 开头的 16 位纯数字） [参考文档](https://docs.open.alipay.com/220/105337) |
 | 是否需要申报至海关 | needDeclare | Boolean | 否 | true | 是否在支付成功后自动进行报关。若不设置该订单是否需要申报海关，则将按照商户在入网时的业务形态决定是否进行申报。若设置为false但之后需申报，可后置调用[8.1 支付信息海关推单](#81-支付信息海关推单) |
 | 货币代码 | currency | String | 是 | "CNY" | 请固定为CNY |
 | 需申报的电子口岸代码 | customsCode | String | 否 | "HG016" | 若需申报则为必填, 参见附录[A.6](#a6-海关及电子口岸代码) |
@@ -1634,7 +1634,7 @@ items类型的结构如下:
 |商户订单号| mchtOrderNo |  F20190402123  |  |
 |h5支付类型| h5PayType | WECHATPAY | 参见 [A.9](#a9-H5支付类型) |
 |h5支付参数| h5PayInfo | 由appId,nonceStr,package,paySign,signType,timeStamp组成的json | 在手机的JS代码中使用返回的支付参数拉起对应的微信支付/支付宝支付。微信渠道[参考文档](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6); 支付宝渠道 [参考文档](https://doc.open.alipay.com/docs/doc.htm?&docType=1&articleId=105591)|
-|支付公司代码 | psp | EASYPAY | 建议商户在生成二维码的前端商城中根据支付公司代码放上对应支付公司的LOGO, 参见 [A.4](#a4-支付公司代码) |
+|支付公司代码 | psp | EASYPAY | 建议商户在前端商城中根据支付公司代码放上对应支付公司的LOGO, 参见 [A.4](#a4-支付公司代码) |
 |订单支付状态| payStatus | "PAY_APPLIED" | 参见 [A.1](#a1-支付状态) |
 
 ~~~
@@ -1662,7 +1662,7 @@ items类型的结构如下:
 |字段名称|参数| 是否必填 |例子|说明|
 |:--|:--|:--|:--|:--|
 |商户订单号| mchtOrderNo | 是 | 1904052344  |  |
-|h5支付类型| h5PayType | String | 是 | "WECHATPAY" | 支持微信公众号、支付宝服务窗，参见 [A.9](#a9-H5支付类型) |
+|h5支付类型| h5PayType | 是 | "WECHATPAY" | 支持微信公众号、支付宝服务窗，参见 [A.9](#a9-H5支付类型) |
 
 * response:
 
@@ -1671,7 +1671,7 @@ items类型的结构如下:
 |商户订单号| mchtOrderNo |  F20190402123  |  |
 |h5支付类型| h5PayType | WECHATPAY | 参见 [A.9](#a9-H5支付类型) |
 |h5支付参数| h5PayInfo | 由appId,nonceStr,package,paySign,signType,timeStamp组成的json | 在手机的JS代码中使用返回的支付参数拉起对应的微信支付/支付宝支付。微信渠道[参考文档](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6); 支付宝渠道 [参考文档](https://doc.open.alipay.com/docs/doc.htm?&docType=1&articleId=105591)|
-|支付公司代码 | psp | EASYPAY | 建议商户在生成二维码的前端商城中根据支付公司代码放上对应支付公司的LOGO, 参见 [A.4](#a4-支付公司代码) |
+|支付公司代码 | psp | EASYPAY | 建议商户在前端商城中根据支付公司代码放上对应支付公司的LOGO, 参见 [A.4](#a4-支付公司代码) |
 |订单支付状态| payStatus | "PAY_APPLIED" | 参见 [A.1](#a1-支付状态) |
 
 ~~~
