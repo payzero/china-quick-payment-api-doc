@@ -42,6 +42,10 @@
          * [9. 退款](#9-退款)
             * [9.1 退款申请](#91-退款申请)
             * [9.2 退款状态查询](#92-退款状态查询)
+         * [10. 手机H5支付（微信公众号/支付宝服务窗支付）](#10-手机h5支付微信公众号支付宝服务窗支付)
+            * [10.1 创建订单并生成手机中拉起支付所需参数](#101-创建订单并生成手机中拉起支付所需参数)
+            * [10.2 刷新支付所需参数](#102-刷新支付所需参数)
+            * [10.3 订单查询](#103-订单查询)
       * [附录A](#附录a)
          * [A.1 支付状态](#a1-支付状态)
          * [A.2 申报状态](#a2-申报状态)
@@ -51,10 +55,11 @@
          * [A.6 海关及电子口岸代码](#a6-海关及电子口岸代码)
          * [A.7 实名认证结果代码](#a7-实名认证结果代码)
          * [A.8 退款状态代码](#a8-退款状态代码)
+         * [A.9 H5支付类型](#a9-h5支付类型)
       * [附录B](#附录b)
          * [B.1 银行卡绑定流程说明](#b1-银行卡绑定流程说明)
 
-<!-- Added by: raphael, at: Wed Jul 10 13:27:26 CST 2019 -->
+<!-- Added by: raphael, at: Tue Jul 16 18:34:33 CST 2019 -->
 
 <!--te-->
 
@@ -707,7 +712,7 @@ items类型的结构如下:
 
 ### 4. 二维码收单
 #### 4.1 创建订单并生成支付二维码
-通过该接口可直接创建单笔订单并根据二维码类型返回对应的二维码链接。当该二维码被扫码支付后，支付结果（成功/失败）将以异步通知的形式返回给商户服务器，参见[3.4](#34-支付状态异步通知)。若支付成功，根据订单设置的是否需要自动申报字段needDeclare，若需要则将继续自动执行申报任务，申报结果也将以异步通知的形式发送，参见[3.5](#35-申报状态异步通知)。
+通过该接口可直接创建单笔订单并根据二维码类型返回对应的二维码链接。当该二维码被扫码支付后，支付结果（成功/失败）将以异步通知的形式返回给商户服务器，参见[3.4](#34-支付状态异步通知)。若支付成功，根据订单设置的是否需要自动申报字段needDeclare，若需要则将继续自动执行申报任务，申报结果也将以异步通知的形式发送，参见[3.5](#35-申报状态异步通知)。订单的过期时间为15分钟。
 
 ![](doc/warning_qrcode.png)
 
@@ -997,8 +1002,8 @@ items类型的结构如下:
 #### 5.3 创建订单并使用快捷协议进行支付
 通过该接口可直接创建单笔订单并使用指定的快捷支付协议(agreeid)进行支付，根据商户的实际签约支付渠道不同，可能有如下两种结果:
 
-* 快捷支付需要短信验证码进行验证，则本步骤返回的支付状态(payStatus)为"PAY\_APPLIED"，商户侧需继续对接接口[5.4 支付短信确认](#54-支付短信确认)
-* 快捷支付不需要短信验证码进行验证，例【易生支付】，则本步骤返回的支付状态(payStatus)可能为"PAY\_SMS\_CONFIRMED"或"PAY\_SUCCEED"，无需对接[5.4 支付短信确认](#54-支付短信确认),由于渠道限制，支付状态可能无法直接变更为"PAY\_SUCCEED"，商户需等待异步通知或主动使用订单查询接口进行轮询。
+* 快捷支付需要短信验证码进行验证，商户侧需继续对接接口[5.4 支付短信确认](#54-支付短信确认)
+* 快捷支付不需要短信验证码进行验证，例【易生支付】，无需对接[5.4 支付短信确认](#54-支付短信确认),由于渠道限制，支付状态可能无法直接变更为"PAY\_SUCCEED"，商户需等待异步通知或主动使用订单查询接口进行轮询。
 
 调用方式详情:
 
@@ -1547,6 +1552,157 @@ items类型的结构如下:
 }
 ~~~
 
+### 10. 手机H5支付（微信公众号/支付宝服务窗支付）
+#### 10.1 创建订单并生成手机中拉起支付所需参数
+通过该接口可直接创建单笔订单并根据所需h5支付的类型(微信公众号/支付宝服务窗)返回在各自的手机浏览器中拉起对应支付的支付参数。当该订单在手机中支付完成时，支付结果（成功/失败）将以异步通知的形式返回给商户服务器，参见[3.4](#34-支付状态异步通知)。若支付成功，根据订单设置的是否需要自动申报字段needDeclare，若需要则将继续自动执行申报任务，申报结果也将以异步通知的形式发送，参见[3.5](#35-申报状态异步通知)。订单的过期时间为15分钟。
+
+![](doc/h5_pay.png)
+
+* url: {payzero\_api\_url}/order/createAndH5Pay
+* method: POST
+* request: Body parameter (application/json)
+
+请传入一个单个的order类型对象，order类型的结构如下
+
+|字段名称|参数|类型|是否必填|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+|h5支付类型| h5PayType | String | 是 | "WECHATPAY" | 支持微信公众号、支付宝服务窗，参见 [A.9](#a9-H5支付类型) |
+| openId | openId | String | 是 | "oALT01I3_3N53eTx03kVgerL6iSU" | 微信渠道 通过OAuth2.0协议标准得到的微信 open_id [参考文档](https://open.weixin.qq.com/cgi%02bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=&lang=zh_CN); 支付宝渠道 通过通过 OAuth2.0 协议标准得到支付宝买家的唯一用户号（ 2088 开头的 16 位纯数字） [参考文档](https://docs.open.alipay.com/220/105337) |
+| 是否需要申报至海关 | needDeclare | Boolean | 否 | true | 是否在支付成功后自动进行报关。若不设置该订单是否需要申报海关，则将按照商户在入网时的业务形态决定是否进行申报。若设置为false但之后需申报，可后置调用[8.1 支付信息海关推单](#81-支付信息海关推单) |
+| 货币代码 | currency | String | 是 | "CNY" | 请固定为CNY |
+| 需申报的电子口岸代码 | customsCode | String | 否 | "HG016" | 若需申报则为必填, 参见附录[A.6](#a6-海关及电子口岸代码) |
+| 海关关区代码| customsAreaCode | String | 否 | "5130" | 若需申报且申报海关为广州海关时必填 |
+| 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
+| 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
+| 商户订单编号 | mchtOrderNo | String| 是 | "F20190402123" | 请确保商户订单不重复 |
+| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
+| 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
+| 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
+| 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
+| 订单额度 | paymentAmount | Long | 是 | 4023 | 请务必注意单位为分 |
+| 订单内主要商品信息 | subject | String | 是 | "XXXX化妆品" | 长度不超过200个字符 |
+| 接收支付异步通知url | notifyUrl | String | 否 | | 本字段可不填，若不填写，异步通知将发送至本文档第三章[3. 接收异步通知](#3-接收异步通知)在商户后台所填写的商户级别的异步通知url中。若本字段填写则以本字段填写内容为准。消息体会进行签名，签名方式参考第三章。 |
+| 订单内商品列表 | items | items类型数组 | 否 | | 可空 |
+
+items类型的结构如下:
+
+|字段名称|参数|类型|是否必填|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+| 商品名称 | subject | String | 是 | "XXXX口红" | 长度不超过200个字符 |
+| 商品链接 | itemLink | String | 是 | "http://www.baidu.com" |  |
+| 货号 | articleNum | String | 否 | "WO11111" |  |
+
+
+* request example: 
+
+~~~
+  {
+  	"h5PayType": "WECHATPAY",
+	"openId": "oALT01I3_3N53eTx03kVgerL6iSU",
+  	"needDeclare" : false,
+  	"currency": "CNY",
+  	"customsCode": "HG022",
+  	"customsAreaCode": "5130",
+  	"customsJyOrg": "440009",
+  	"customsInType": "2",
+  	"items": [
+      {
+        "articleNum": "HH00001",
+        "itemLink": "http://www.baidu.com",
+        "subject": "测试商品1"
+      },
+       {
+        "articleNum": "HH00002",
+        "itemLink": "http://www.baidu.com",
+        "subject": "测试商品2"
+      }
+    ],
+    "mchtOrderNo": "F20190402123",
+    "orderDatetime": "2019-04-02 11:11:46",
+    "payerName": "李白",
+    "payerNumber": "310327198009270027",
+    "payerPhone": "13800138000",
+    "paymentAmount": 3352,
+    "subject": "测试商品1"
+  }
+~~~
+
+* response:
+
+|字段名称|参数| 例子|说明|
+|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo |  F20190402123  |  |
+|h5支付类型| h5PayType | WECHATPAY | 参见 [A.9](#a9-H5支付类型) |
+|h5支付参数| h5PayInfo | {\"timeStamp\":\"1563270374\",\"package\":\"prepay_id=wx1617461456376963add1da991526733300\",\"paySign\":\"L/PCmk3GLslqqhgAfP7bfBdtATrd3kXfHlA5KxXks+zuXYS9vGrWtYYdG0yfaCl2M2w59Hagf/LuhO+GCmSPpgrwJKNzazT/5SEICZ0IdPn+O4/NWG5aCiRidILanCip2PV2z8AbpyG8waEe6nC2my8JXgsQzZYinsg7GQ4lnWaXAHMu/eKSQvh4QTrG4p5XNYg5Uo+1A0k2m56GwTWiEmveMizk8D4SllTBFlplbfkkLIeRytTU51otPtXYjR+QmpbtbLOM3LTRsvEbK5qTIbp2V0S6H2AG3clndNbSzuhggYib6jfP1lSz2gEEBuGq8A9z3KUjKCGuGNRckv0oXg==\",\"appId\":\"wxe917f1907972497a\",\"signType\":\"RSA\",\"nonceStr\":\"1PkjRaOpn79qLUkpBSZlxBnxgsoZkxA9\"} | 在手机的JS代码中使用返回的支付参数拉起对应的微信支付/支付宝支付。微信渠道[参考文档](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6); 支付宝渠道 [参考文档](https://doc.open.alipay.com/docs/doc.htm?&docType=1&articleId=105591)|
+|支付公司代码 | psp | EASYPAY | 建议商户在生成二维码的前端商城中根据支付公司代码放上对应支付公司的LOGO, 参见 [A.4](#a4-支付公司代码) |
+|订单支付状态| payStatus | "PAY_APPLIED" | 参见 [A.1](#a1-支付状态) |
+
+~~~
+{
+    "success": true,
+    "errorMsg": null,
+    "errorCode": null,
+    "data": {
+        "mchtOrderNo": "8D19071021971",
+        "psp": "EASYPAY",
+        "h5PayInfo": "{\"timeStamp\":\"1563270374\",\"package\":\"prepay_id=wx1617461456376963add1da991526733300\",\"paySign\":\"L/PCmk3GLslqqhgAfP7bfBdtATrd3kXfHlA5KxXks+zuXYS9vGrWtYYdG0yfaCl2M2w59Hagf/LuhO+GCmSPpgrwJKNzazT/5SEICZ0IdPn+O4/NWG5aCiRidILanCip2PV2z8AbpyG8waEe6nC2my8JXgsQzZYinsg7GQ4lnWaXAHMu/eKSQvh4QTrG4p5XNYg5Uo+1A0k2m56GwTWiEmveMizk8D4SllTBFlplbfkkLIeRytTU51otPtXYjR+QmpbtbLOM3LTRsvEbK5qTIbp2V0S6H2AG3clndNbSzuhggYib6jfP1lSz2gEEBuGq8A9z3KUjKCGuGNRckv0oXg==\",\"appId\":\"wxe917f1907972497a\",\"signType\":\"RSA\",\"nonceStr\":\"1PkjRaOpn79qLUkpBSZlxBnxgsoZkxA9\"}",
+        "h5PayType": "WECHATPAY",
+        "payStatus": "PAY_APPLIED"
+    }
+}
+~~~
+
+#### 10.2 刷新支付所需参数
+针对已经提交至系统的订单（例如通过订单批次上传的订单、已创建的订单但客户在手机中长期未支付导致过期的订单、想要切换微信/支付宝的订单，之前支付失败想重新使用h5支付的订单），需要重新生成h5支付参数，可调用此接口:
+
+* url: {payzero\_api\_url}/order/h5Pay?mchtOrderNo={mchtOrderNo}&h5PayType={h5PayType}
+* method: GET
+* request: Query Params
+
+|字段名称|参数| 是否必填 |例子|说明|
+|:--|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo | 是 | 1904052344  |  |
+|h5支付类型| h5PayType | String | 是 | "WECHATPAY" | 支持微信公众号、支付宝服务窗，参见 [A.9](#a9-H5支付类型) |
+
+* response:
+
+|字段名称|参数| 例子|说明|
+|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo |  F20190402123  |  |
+|h5支付类型| h5PayType | WECHATPAY | 参见 [A.9](#a9-H5支付类型) |
+|h5支付参数| h5PayInfo | {\"timeStamp\":\"1563270374\",\"package\":\"prepay_id=wx1617461456376963add1da991526733300\",\"paySign\":\"L/PCmk3GLslqqhgAfP7bfBdtATrd3kXfHlA5KxXks+zuXYS9vGrWtYYdG0yfaCl2M2w59Hagf/LuhO+GCmSPpgrwJKNzazT/5SEICZ0IdPn+O4/NWG5aCiRidILanCip2PV2z8AbpyG8waEe6nC2my8JXgsQzZYinsg7GQ4lnWaXAHMu/eKSQvh4QTrG4p5XNYg5Uo+1A0k2m56GwTWiEmveMizk8D4SllTBFlplbfkkLIeRytTU51otPtXYjR+QmpbtbLOM3LTRsvEbK5qTIbp2V0S6H2AG3clndNbSzuhggYib6jfP1lSz2gEEBuGq8A9z3KUjKCGuGNRckv0oXg==\",\"appId\":\"wxe917f1907972497a\",\"signType\":\"RSA\",\"nonceStr\":\"1PkjRaOpn79qLUkpBSZlxBnxgsoZkxA9\"} | 在手机的JS代码中使用返回的支付参数拉起对应的微信支付/支付宝支付。微信渠道[参考文档](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6); 支付宝渠道 [参考文档](https://doc.open.alipay.com/docs/doc.htm?&docType=1&articleId=105591)|
+|支付公司代码 | psp | EASYPAY | 建议商户在生成二维码的前端商城中根据支付公司代码放上对应支付公司的LOGO, 参见 [A.4](#a4-支付公司代码) |
+|订单支付状态| payStatus | "PAY_APPLIED" | 参见 [A.1](#a1-支付状态) |
+
+~~~
+{
+    "success": true,
+    "errorMsg": null,
+    "errorCode": null,
+    "data": {
+        "mchtOrderNo": "8D19071021971",
+        "psp": "EASYPAY",
+        "h5PayInfo": "{\"timeStamp\":\"1563270374\",\"package\":\"prepay_id=wx1617461456376963add1da991526733300\",\"paySign\":\"L/PCmk3GLslqqhgAfP7bfBdtATrd3kXfHlA5KxXks+zuXYS9vGrWtYYdG0yfaCl2M2w59Hagf/LuhO+GCmSPpgrwJKNzazT/5SEICZ0IdPn+O4/NWG5aCiRidILanCip2PV2z8AbpyG8waEe6nC2my8JXgsQzZYinsg7GQ4lnWaXAHMu/eKSQvh4QTrG4p5XNYg5Uo+1A0k2m56GwTWiEmveMizk8D4SllTBFlplbfkkLIeRytTU51otPtXYjR+QmpbtbLOM3LTRsvEbK5qTIbp2V0S6H2AG3clndNbSzuhggYib6jfP1lSz2gEEBuGq8A9z3KUjKCGuGNRckv0oXg==\",\"appId\":\"wxe917f1907972497a\",\"signType\":\"RSA\",\"nonceStr\":\"1PkjRaOpn79qLUkpBSZlxBnxgsoZkxA9\"}",
+        "h5PayType": "WECHATPAY",
+        "payStatus": "PAY_APPLIED"
+    }
+}
+~~~
+
+
+#### 10.3 订单查询
+若商户侧的服务器没有收到订单支付成功的异步消息通知，可以主动查询订单的支付结果等信息，避免在h5支付场景下因服务器未收到通知而造成用户侧相关业务流程无法继续进行的问题。
+
+* url: {payzero\_api\_url}/order/queryOrder?mchtOrderNo={mchtOrderNo}
+* method: GET
+* request: Query Params
+
+|字段名称|参数| 是否必填 |例子|说明|
+|:--|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo | 是 | 1904052344  |  |
+
+* response: 
+返回结果为[2.4](#24-单笔订单回执查询) 中orderResultDto，重点关注其payStatus和paymentDatetime即可。
 
 ## 附录A
 
@@ -1637,6 +1793,13 @@ items类型的结构如下:
 |REFUND_REQUESTED|退款中|
 |REFUND_SUCCEED|退款成功|
 |REFUND_FAILED|退款失败|
+
+### A.9 H5支付类型
+
+|H5支付类型|说明|
+|:--|:--|
+|WECHATPAY| 微信公众号 |
+|ALIPAY| 支付宝服务窗 |
 
 
 ## 附录B

@@ -1,12 +1,11 @@
 package cn.payzero.quickpaysdk.web;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,12 +31,16 @@ public class NotificationsController {
 	@Autowired
 	TestConstant testConst;
 	
+	AtomicInteger receiveCount = new AtomicInteger(0);
+	
 	@RequestMapping(path="quickpay_notify")
 	public String processQuickpayNotify(
 			@RequestBody NotificationWrapper request){
 		
 		try {
-						
+			
+			System.out.println("Receive msg count: ****** " + receiveCount.incrementAndGet());
+			
 			String sign = SHA1.getSHA1(testConst.TEST_SIGN_TOKEN, request.getTimestamp(), request.getMsgBody());
 			System.out.println("自身计算签名:" + sign);
 			System.out.println("请求返回签名:" + request.getSign());

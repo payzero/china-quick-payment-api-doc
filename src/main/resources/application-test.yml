@@ -1,5 +1,5 @@
 quickpay:
   url: "https://dev-quickpay-api.payzero.cn/"
-  username: 
-  password: 
+  username: fujianjiamei
+  password: PZ123456
   signToken: s4khkBd4fL6uaRS2
