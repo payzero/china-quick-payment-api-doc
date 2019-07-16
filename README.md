@@ -1633,7 +1633,7 @@ items类型的结构如下:
 |:--|:--|:--|:--|
 |商户订单号| mchtOrderNo |  F20190402123  |  |
 |h5支付类型| h5PayType | WECHATPAY | 参见 [A.9](#a9-H5支付类型) |
-|h5支付参数| h5PayInfo | {\"timeStamp\":\"1563270374\",\"package\":\"prepay_id=wx1617461456376963add1da991526733300\",\"paySign\":\"L/PCmk3GLslqqhgAfP7bfBdtATrd3kXfHlA5KxXks+zuXYS9vGrWtYYdG0yfaCl2M2w59Hagf/LuhO+GCmSPpgrwJKNzazT/5SEICZ0IdPn+O4/NWG5aCiRidILanCip2PV2z8AbpyG8waEe6nC2my8JXgsQzZYinsg7GQ4lnWaXAHMu/eKSQvh4QTrG4p5XNYg5Uo+1A0k2m56GwTWiEmveMizk8D4SllTBFlplbfkkLIeRytTU51otPtXYjR+QmpbtbLOM3LTRsvEbK5qTIbp2V0S6H2AG3clndNbSzuhggYib6jfP1lSz2gEEBuGq8A9z3KUjKCGuGNRckv0oXg==\",\"appId\":\"wxe917f1907972497a\",\"signType\":\"RSA\",\"nonceStr\":\"1PkjRaOpn79qLUkpBSZlxBnxgsoZkxA9\"} | 在手机的JS代码中使用返回的支付参数拉起对应的微信支付/支付宝支付。微信渠道[参考文档](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6); 支付宝渠道 [参考文档](https://doc.open.alipay.com/docs/doc.htm?&docType=1&articleId=105591)|
+|h5支付参数| h5PayInfo | 由appId,nonceStr,package,paySign,signType,timeStamp组成的json | 在手机的JS代码中使用返回的支付参数拉起对应的微信支付/支付宝支付。微信渠道[参考文档](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6); 支付宝渠道 [参考文档](https://doc.open.alipay.com/docs/doc.htm?&docType=1&articleId=105591)|
 |支付公司代码 | psp | EASYPAY | 建议商户在生成二维码的前端商城中根据支付公司代码放上对应支付公司的LOGO, 参见 [A.4](#a4-支付公司代码) |
 |订单支付状态| payStatus | "PAY_APPLIED" | 参见 [A.1](#a1-支付状态) |
 
@@ -1670,7 +1670,7 @@ items类型的结构如下:
 |:--|:--|:--|:--|
 |商户订单号| mchtOrderNo |  F20190402123  |  |
 |h5支付类型| h5PayType | WECHATPAY | 参见 [A.9](#a9-H5支付类型) |
-|h5支付参数| h5PayInfo | {\"timeStamp\":\"1563270374\",\"package\":\"prepay_id=wx1617461456376963add1da991526733300\",\"paySign\":\"L/PCmk3GLslqqhgAfP7bfBdtATrd3kXfHlA5KxXks+zuXYS9vGrWtYYdG0yfaCl2M2w59Hagf/LuhO+GCmSPpgrwJKNzazT/5SEICZ0IdPn+O4/NWG5aCiRidILanCip2PV2z8AbpyG8waEe6nC2my8JXgsQzZYinsg7GQ4lnWaXAHMu/eKSQvh4QTrG4p5XNYg5Uo+1A0k2m56GwTWiEmveMizk8D4SllTBFlplbfkkLIeRytTU51otPtXYjR+QmpbtbLOM3LTRsvEbK5qTIbp2V0S6H2AG3clndNbSzuhggYib6jfP1lSz2gEEBuGq8A9z3KUjKCGuGNRckv0oXg==\",\"appId\":\"wxe917f1907972497a\",\"signType\":\"RSA\",\"nonceStr\":\"1PkjRaOpn79qLUkpBSZlxBnxgsoZkxA9\"} | 在手机的JS代码中使用返回的支付参数拉起对应的微信支付/支付宝支付。微信渠道[参考文档](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6); 支付宝渠道 [参考文档](https://doc.open.alipay.com/docs/doc.htm?&docType=1&articleId=105591)|
+|h5支付参数| h5PayInfo | 由appId,nonceStr,package,paySign,signType,timeStamp组成的json | 在手机的JS代码中使用返回的支付参数拉起对应的微信支付/支付宝支付。微信渠道[参考文档](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6); 支付宝渠道 [参考文档](https://doc.open.alipay.com/docs/doc.htm?&docType=1&articleId=105591)|
 |支付公司代码 | psp | EASYPAY | 建议商户在生成二维码的前端商城中根据支付公司代码放上对应支付公司的LOGO, 参见 [A.4](#a4-支付公司代码) |
 |订单支付状态| payStatus | "PAY_APPLIED" | 参见 [A.1](#a1-支付状态) |
 
