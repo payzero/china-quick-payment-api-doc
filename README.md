@@ -213,7 +213,7 @@ mvn spring-boot:run
 | 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
 | 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
 | 商户订单编号 | mchtOrderNo | String| 是 | "2019032000000123" | 只能包含英文字母、数字、短划线-和下划线_，最大长度30位，并请确保商户订单不重复 |
-| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
+| 订单下单时间 | orderDatetime | String | 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
 | 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
 | 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
 | 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
@@ -571,7 +571,7 @@ response:
 | 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
 | 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
 | 商户订单编号 | mchtOrderNo | String| 是 | "F20190402123" | 只能包含英文字母、数字、短划线-和下划线_，最大长度30位，并请确保商户订单不重复 |
-| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
+| 订单下单时间 | orderDatetime | String | 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
 | 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
 | 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
 | 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
@@ -732,7 +732,7 @@ items类型的结构如下:
 | 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
 | 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
 | 商户订单编号 | mchtOrderNo | String| 是 | "F20190402123" | 只能包含英文字母、数字、短划线-和下划线_，最大长度30位，并请确保商户订单不重复 |
-| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
+| 订单下单时间 | orderDatetime | String | 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
 | 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
 | 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
 | 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
@@ -1023,7 +1023,7 @@ items类型的结构如下:
 | 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
 | 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
 | 商户订单编号 | mchtOrderNo | String| 是 | "F20190402123" | 只能包含英文字母、数字、短划线-和下划线_，最大长度30位，并请确保商户订单不重复 |
-| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
+| 订单下单时间 | orderDatetime | String | 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
 | 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
 | 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
 | 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
@@ -1237,7 +1237,7 @@ items类型的结构如下:
 | 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
 | 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
 | 商户订单编号 | mchtOrderNo | String| 是 | "F20190402123" | 只能包含英文字母、数字、短划线-和下划线_，最大长度30位，并请确保商户订单不重复 |
-| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
+| 订单下单时间 | orderDatetime | String | 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
 | 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
 | 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
 | 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
@@ -1575,7 +1575,7 @@ items类型的结构如下:
 | 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
 | 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
 | 商户订单编号 | mchtOrderNo | String| 是 | "F20190402123" | 只能包含英文字母、数字、短划线-和下划线_，最大长度30位，并请确保商户订单不重复 |
-| 订单下单时间 | orderDatetime | Date| 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
+| 订单下单时间 | orderDatetime | String | 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
 | 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
 | 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
 | 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
