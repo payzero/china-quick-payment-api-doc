@@ -1785,6 +1785,7 @@ items类型的结构如下:
 |IDNO_INVALID|身份证号不合法|
 |CANNOT_FIND_ID|身份证号不在库中|
 |INSUFFICIENT_FEE|实名认证手续费不足|
+|OTHER_ERROR|实名认证服务异常，请联系技术人员排查|
 
 ### A.8 退款状态代码
 
