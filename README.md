@@ -78,7 +78,7 @@ Authorization: Bearer 获取到的token
 
 ![](doc/postman_header.png)
 
-获取到的token为Payzero用于验证调用方身份的JWT风格的token, 该token的获得是通过使用Payzero分配的APP Id和APP Key并调用登录接口。其有效时间为4小时，且JWT本身包含了过期的时间的信息。关于JWT token，可参考 <https://jwt.io/>。4小时到期之前，可重新调用登录接口获取token，token之间均为独立关系，获取新的token不会影响未过期的老token的使用。
+获取到的token为Payzero用于验证调用方身份的JWT风格的token, 该token的获得是通过使用Payzero分配的APP Id和APP Key并调用登录接口。其有效时间为<b>4小时</b>，且JWT本身包含了过期的时间的信息。关于JWT token，可参考 <https://jwt.io/>。若需要重新生成新token，只需再次调用登录接口获取token即可，token之间均为独立关系，获取新的token不会影响未过期的老token的使用。
 
 ### 返回格式说明
 
@@ -90,7 +90,7 @@ Authorization: Bearer 获取到的token
 |400|BAD REQUEST, 通常用于请求的参数不正确|
 |405|METHOD NOT ALLOWED, HTTP方法使用错误，例如错误的使用POST调用了一个GET方法|
 |401|UNAUTHORIZED, access_token不正确|
-|403|FORBIDDEN, 权限不足，出现此错误时，请再看一遍[技术综述](#技术综述),检查是否已按要求将Authorization相关的key-value加入HTTP请求头部中|
+|403|FORBIDDEN, 权限不足，出现此错误时，请再看一遍[技术综述](#技术综述),检查是否已按要求将Authorization相关的key-value加入HTTP请求头部中，并确保token没有过期(过期时间为4小时)|
 |404|NOT FOUND, 不存在的接口url|
 |500|INTERNAL SERVER ERROR, 服务器内部错误|
 
@@ -159,7 +159,9 @@ mvn spring-boot:run
 ## 接口介绍 
 
 ### 1. 获取调用token接口
-通过本接口获取调用后续API所需的token。初次调用前请登录商户后台，从右上角图标进入商户配置页面生成AppId与AppKey (AppKey只会显示一次，请妥善保管，重新生成AppKey将造成旧AppKey无法使用)，获取方式如下图所示:
+通过本接口获取调用后续API所需的token。获取到的token为Payzero用于验证调用方身份的JWT风格的token, 其有效时间为<b>4小时</b>。若需重新获取token，只需再次调用登录接口获取token即可，token之间均为独立关系，获取新的token不会影响未过期的老token的使用。
+
+初次调用前请登录商户后台，从右上角图标进入商户配置页面生成AppId与AppKey (AppKey只会显示一次，请妥善保管，重新生成AppKey将造成旧AppKey无法使用)，获取方式如下图所示:
 
 ![](doc/merchant_config.png)
 ![](doc/merchant_api_config.png)
