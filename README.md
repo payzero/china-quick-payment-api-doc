@@ -17,6 +17,7 @@
             * [2.5 订单批次回执查询](#25-订单批次回执查询)
             * [2.6 单笔订单创建并请求支付](#26-单笔订单创建并请求支付)
             * [2.7 单笔订单请求重新安排支付](#27-单笔订单请求重新安排支付)
+            * [2.8 单笔订单创建](#28-单笔订单创建)
          * [3. 接收异步通知](#3-接收异步通知)
             * [3.1 配置异步通知接收参数](#31-配置异步通知接收参数)
             * [3.2 消息签名方法](#32-消息签名方法)
@@ -59,7 +60,7 @@
       * [附录B](#附录b)
          * [B.1 银行卡绑定流程说明](#b1-银行卡绑定流程说明)
 
-<!-- Added by: raphael, at: Tue Jul 16 18:34:33 CST 2019 -->
+<!-- Added by: raphael, at: Wed Aug 14 11:14:57 CST 2019 -->
 
 <!--te-->
 
@@ -670,6 +671,91 @@ items类型的结构如下:
     "data": "订单进入支付队列成功"
 }
 ~~~
+
+#### 2.8 单笔订单创建
+调用本接口将订单上送至本系统中供后续自行选择不同的支付方式进行支付
+
+* url: {payzero\_api\_url}/order/create
+* method: POST
+* request: Body parameter (application/json)
+
+请传入一个单个的order类型对象，order类型的结构如下
+
+|字段名称|参数|类型|是否必填|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+| 货币代码 | currency | String | 是 | "CNY" | 请固定为CNY |
+| 需申报的电子口岸代码 | customsCode | String | 否 | "HG016" | 若需申报则为必填, 参见附录[A.6](#a6-海关及电子口岸代码) |
+| 海关关区代码| customsAreaCode | String | 否 | "5130" | 若需申报且申报海关为广州海关时必填 |
+| 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
+| 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
+| 商户订单编号 | mchtOrderNo | String| 是 | "F20190402123" | 只能包含英文字母、数字、短划线-和下划线_，最大长度30位，并请确保商户订单不重复 |
+| 订单下单时间 | orderDatetime | String | 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
+| 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
+| 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
+| 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
+| 订单额度 | paymentAmount | Long | 是 | 4023 | 请务必注意单位为分 |
+| 订单内主要商品信息 | subject | String | 是 | "XXXX化妆品" | 长度不超过200个字符 |
+| 接收支付异步通知url | notifyUrl | String | 否 | | 本字段可不填，若不填写，异步通知将发送至本文档第三章[3. 接收异步通知](#3-接收异步通知)在商户后台所填写的商户级别的异步通知url中。若本字段填写则以本字段填写内容为准。消息体会进行签名，签名方式参考第三章。 |
+| 订单内商品列表 | items | items类型数组 | 否 | | 可空 |
+
+items类型的结构如下:
+
+|字段名称|参数|类型|是否必填|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+| 商品名称 | subject | String | 是 | "XXXX口红" | 长度不超过200个字符 |
+| 商品链接 | itemLink | String | 是 | "http://www.baidu.com" |  |
+| 货号 | articleNum | String | 否 | "WO11111" |  |
+
+
+* request example: 
+
+~~~
+  {
+    "currency": "CNY",
+    "customsCode": "HG022",
+    "customsAreaCode": "5130",
+    "customsJyOrg": "440009",
+    "customsInType": "2",
+    "items": [
+      {
+        "articleNum": "HH00001",
+        "itemLink": "http://www.baidu.com",
+        "subject": "测试商品1"
+      },
+       {
+        "articleNum": "HH00002",
+        "itemLink": "http://www.baidu.com",
+        "subject": "测试商品2"
+      }
+    ],
+    "mchtOrderNo": "F20190402123",
+    "orderDatetime": "2019-04-02 11:11:46",
+    "payerName": "李白",
+    "payerNumber": "310327198009270027",
+    "payerPhone": "13800138000",
+    "paymentAmount": 35302,
+    "subject": "测试商品1"
+  }
+~~~
+
+* response: 
+
+|字段名称|参数|类型|例子|说明|
+|:--|:--|:--|:--|:--|
+| 商户订单编号 | mchtOrderNo | String| "F20190402123" | |
+
+~~~
+{
+    "success": true,
+    "errorMsg": null,
+    "errorCode": null,
+    "data": {
+        "mchtOrderNo": "F20190402123"
+    }
+}
+~~~
+
+
 
 
 ### 3. 接收异步通知
