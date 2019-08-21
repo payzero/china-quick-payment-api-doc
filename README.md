@@ -47,6 +47,10 @@
             * [10.1 创建订单并生成手机中拉起支付所需参数](#101-创建订单并生成手机中拉起支付所需参数)
             * [10.2 刷新支付所需参数](#102-刷新支付所需参数)
             * [10.3 订单查询](#103-订单查询)
+         * [11.二维码被扫支付](#11二维码被扫支付)
+            * [11.1 创建订单并进行被扫支付](#111-创建订单并进行被扫支付)
+            * [11.2 重新进行被扫支付](#112-重新进行被扫支付)
+            * [11.3 订单查询](#113-订单查询)
       * [附录A](#附录a)
          * [A.1 支付状态](#a1-支付状态)
          * [A.2 申报状态](#a2-申报状态)
@@ -60,7 +64,7 @@
       * [附录B](#附录b)
          * [B.1 银行卡绑定流程说明](#b1-银行卡绑定流程说明)
 
-<!-- Added by: raphael, at: Wed Aug 14 11:14:57 CST 2019 -->
+<!-- Added by: raphael, at: Wed Aug 21 16:41:14 CST 2019 -->
 
 <!--te-->
 
@@ -1780,6 +1784,155 @@ items类型的结构如下:
 
 #### 10.3 订单查询
 若商户侧的服务器没有收到订单支付成功的异步消息通知，可以主动查询订单的支付结果等信息，避免在h5支付场景下因服务器未收到通知而造成用户侧相关业务流程无法继续进行的问题。
+
+* url: {payzero\_api\_url}/order/queryOrder?mchtOrderNo={mchtOrderNo}
+* method: GET
+* request: Query Params
+
+|字段名称|参数| 是否必填 |例子|说明|
+|:--|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo | 是 | 1904052344  |  |
+
+* response: 
+返回结果为[2.4](#24-单笔订单回执查询) 中orderResultDto，重点关注其payStatus和paymentDatetime即可。
+
+### 11.二维码被扫支付
+#### 11.1 创建订单并进行被扫支付
+通过该接口可直接创建单笔订单并根据被扫的二维码类型(微信/支付宝/银联)及所传入的二维码payCode完成支付。当该订单在手机中支付完成时，支付结果（成功/失败）将以异步通知的形式返回给商户服务器，参见[3.4](#34-支付状态异步通知)。若支付成功，根据订单设置的是否需要自动申报字段needDeclare，若需要则将继续自动执行申报任务，申报结果也将以异步通知的形式发送，参见[3.5](#35-申报状态异步通知)。订单的过期时间为15分钟。
+
+测试环境无法进行二维码被扫测试，请使用
+
+* url: {payzero\_api\_url}/order/createAndScanCode
+* method: POST
+* request: Body parameter (application/json)
+
+请传入一个单个的order类型对象，order类型的结构如下
+
+|字段名称|参数|类型|是否必填|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+| 被扫二维码类型 | qrCodeType | String | 是 | "WECHATPAY" | 微信二维码，参见 [A.3](#a3-二维码类型) |
+| 被扫消费码 | payCode | String | 是 | "134936194387046267" |手机上的被扫的消费码 |
+| 是否需要申报至海关 | needDeclare | Boolean | 否 | true | 是否在支付成功后自动进行报关。若不设置该订单是否需要申报海关，则将按照商户在入网时的业务形态决定是否进行申报。若设置为false但之后需申报，可后置调用[8.1 支付信息海关推单](#81-支付信息海关推单) |
+| 货币代码 | currency | String | 是 | "CNY" | 请固定为CNY |
+| 需申报的电子口岸代码 | customsCode | String | 否 | "HG016" | 若需申报则为必填, 参见附录[A.6](#a6-海关及电子口岸代码) |
+| 海关关区代码| customsAreaCode | String | 否 | "5130" | 若需申报且申报海关为广州海关时必填 |
+| 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
+| 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
+| 商户订单编号 | mchtOrderNo | String| 是 | "F20190402123" | 只能包含英文字母、数字、短划线-和下划线_，最大长度30位，并请确保商户订单不重复 |
+| 订单下单时间 | orderDatetime | String | 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
+| 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
+| 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
+| 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
+| 订单额度 | paymentAmount | Long | 是 | 4023 | 请务必注意单位为分 |
+| 订单内主要商品信息 | subject | String | 是 | "XXXX化妆品" | 长度不超过200个字符 |
+| 接收支付异步通知url | notifyUrl | String | 否 | | 本字段可不填，若不填写，异步通知将发送至本文档第三章[3. 接收异步通知](#3-接收异步通知)在商户后台所填写的商户级别的异步通知url中。若本字段填写则以本字段填写内容为准。消息体会进行签名，签名方式参考第三章。 |
+| 订单内商品列表 | items | items类型数组 | 否 | | 可空 |
+
+items类型的结构如下:
+
+|字段名称|参数|类型|是否必填|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+| 商品名称 | subject | String | 是 | "XXXX口红" | 长度不超过200个字符 |
+| 商品链接 | itemLink | String | 是 | "http://www.baidu.com" |  |
+| 货号 | articleNum | String | 否 | "WO11111" |  |
+
+
+* request example: 
+
+~~~
+  {
+  	"qrCodeType": "WECHATPAY",
+	"payCode": "134936194387046267",
+  	"needDeclare" : false,
+  	"currency": "CNY",
+  	"customsCode": "HG022",
+  	"customsAreaCode": "5130",
+  	"customsJyOrg": "440009",
+  	"customsInType": "2",
+  	"items": [
+      {
+        "articleNum": "HH00001",
+        "itemLink": "http://www.baidu.com",
+        "subject": "测试商品1"
+      },
+       {
+        "articleNum": "HH00002",
+        "itemLink": "http://www.baidu.com",
+        "subject": "测试商品2"
+      }
+    ],
+    "mchtOrderNo": "F20190402123",
+    "orderDatetime": "2019-04-02 11:11:46",
+    "payerName": "李白",
+    "payerNumber": "310327198009270027",
+    "payerPhone": "13800138000",
+    "paymentAmount": 3352,
+    "subject": "测试商品1"
+  }
+~~~
+
+* response:
+
+|字段名称|参数| 例子|说明|
+|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo |  F20190402123  |  |
+|支付公司代码 | psp | EASYPAY | 建议商户在生成二维码的前端商城中根据支付公司代码放上对应支付公司的LOGO, 参见 [A.4](#a4-支付公司代码) |
+|订单支付状态| payStatus | "PAY_APPLIED" | 参见 [A.1](#a1-支付状态) |
+|支付信息| message | | | 
+
+~~~
+{
+    "success": true,
+    "errorMsg": null,
+    "errorCode": null,
+    "data": {
+        "mchtOrderNo": "F20190402123",
+        "psp": "EASYPAY",
+        "payStatus": "PAY_SUCCEED",
+        "message": "c2b支付-消费成功"
+    }
+}
+~~~
+
+#### 11.2 重新进行被扫支付
+针对已经提交至系统的订单（例如通过订单批次上传的订单、已创建的订单但二维码长期未被扫支付导致被扫码过期的订单、想要切换微信/支付宝/银联二维码的订单，之前支付失败想重新使用被扫支付的订单），需要重新进行被扫支付，可调用此接口:
+
+* url: {payzero\_api\_url}/order/scanCode?mchtOrderNo={mchtOrderNo}&qrCodeType={qrCodeType}&payCode={payCode}
+* method: GET
+* request: Query Params
+
+|字段名称|参数| 是否必填 |例子|说明|
+|:--|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo | 是 | 1904052344  |  |
+|二维码类型| qrCodeType | 是 | WECHATPAY | 支持微信、支付宝、银联二维码，参见 [A.3](#a3-二维码类型) |
+| 被扫消费码 | payCode | 是 | 134936194387046267 |手机上的被扫的消费码 |
+
+* response: 
+
+|字段名称|参数| 例子|说明|
+|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo |  19040523834344  |  |
+|二维码类型| qrCodeType | WECHATPAY | 参见 [A.3](#a3-二维码类型) |
+|二维码url| codeUrl | weixin://wxpay/bizpayurl?pr=X8Zn0PV | |
+|支付公司代码 | psp | EASYPAY | 建议商户在生成二维码的前端商城中根据支付公司代码放上对应支付公司的LOGO, 参见 [A.4](#a4-支付公司代码) |
+
+
+~~~
+{
+  "success": true,
+  "errorMsg": null,
+  "errorCode": null,
+  "data": {
+    "mchtOrderNo": "19040523834344",
+    "psp": "EASYPAY",
+    "codeUrl": "weixin://wxpay/bizpayurl?pr=X8Zn0PV",
+    "qrCodeType": "WECHATPAY"
+  }
+}
+~~~
+
+#### 11.3 订单查询
+若商户侧的服务器没有收到订单支付成功的异步消息通知，可以主动查询订单的支付结果等信息，避免在被扫支付场景下因服务器未收到通知而造成用户侧相关业务流程无法继续进行的问题。
 
 * url: {payzero\_api\_url}/order/queryOrder?mchtOrderNo={mchtOrderNo}
 * method: GET
