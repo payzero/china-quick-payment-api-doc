@@ -144,7 +144,7 @@ Authorization: Bearer 获取到的token
 使用如下链接代替本文中出现的{payzero\_api\_url}字样
 
 * 测试环境: https://dev-quickpay-api.payzero.cn
-* 生产环境: https://quickpay-api.payzero.cn
+* 生产环境: https://yss.bhecard.com/quickpay-api
 
 ### SDK(JAVA)下载
 目前提供部分接口的调用示例，包括如下接口:
